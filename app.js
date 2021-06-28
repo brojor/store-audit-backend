@@ -26,6 +26,7 @@ app.use('/auth', authRoutes);
 const middleware = async (req, res, next) => {
   // something
   const { authorization } = req.headers;
+  console.log('middleware: ', { authorization });
   let token;
 
   if (authorization && authorization.startsWith('Bearer')) {
@@ -41,13 +42,11 @@ const middleware = async (req, res, next) => {
     console.log({ decoded });
     const usersCollection = getDb().collection('users');
     const user = await usersCollection.findOne({ _id: ObjectID(decoded.id) });
-    req.user = user
+    req.user = user;
     console.log({ user });
 
     const { id: userId, role } = decoded;
     console.log({ userId }, { role });
-
-    
   } catch (err) {
     console.log(err);
     const error = new Error('Not authorized to access this route');
@@ -60,21 +59,32 @@ const middleware = async (req, res, next) => {
 
 const controller = async (req, res) => {
   console.log('stores funguje');
-
   const storesCollection = getDb().collection('stores');
-    const stores = await storesCollection
-      .find({ [req.user.role]: ObjectID(req.user._id) })
-      .map((store) => store.storeId)
-      .toArray();
-    console.log({ stores });
+  const stores = await storesCollection
+    .find({ [req.user.role]: ObjectID(req.user._id) })
+    .map((store) => ({ name: store.storeName, id: store.storeId }))
+    .toArray();
+  console.log({ stores });
   res.json({ stores });
 };
 
 app.get('/stores', middleware, controller);
 
+const resultsController = (req, res) => {
+  console.log('body: ', req.body);
+  console.log('resultsController fungujeme');
+  res.json({
+    message: '[resultsController]: fungujeme',
+  });
+};
+
+app.post('/results', middleware, resultsController);
+
 const errorHandler = (err, req, res, next) => {
+  console.log('errorhandler');
   res.status(res.statusCode || 500);
   res.json({
+    success: false,
     message: err.message,
     //   stack: err.stack,
   });
