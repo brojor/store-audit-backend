@@ -4,92 +4,25 @@ const http = require('http').createServer(app);
 const authRoutes = require('./routes/auth');
 const dotenv = require('dotenv');
 const cors = require('cors');
-// temp-start
-const { getDb } = require('./db/index');
-const jwt = require('jsonwebtoken');
-const ObjectID = require('mongodb').ObjectID;
-// temp-end
+
+const { protect } = require('./middleware/auth');
+const { errorHandler } = require('./middleware/error');
+const { stores, results, audits } = require('./controllers/audit');
+
 dotenv.config({ path: './config/.env' });
 
 app.use(express.json());
 app.use(cors());
 
-app.get('/', (req, res) => {
-  const response = 'hello my friend';
-  console.log('fungujeme..');
-  res.json(response);
-});
-
 app.use('/auth', authRoutes);
-// temp-start
 
-const middleware = async (req, res, next) => {
-  // something
-  const { authorization } = req.headers;
-  console.log('middleware: ', { authorization });
-  let token;
+app.get('/stores', protect, stores);
+app.post('/results', protect, results);
 
-  if (authorization && authorization.startsWith('Bearer')) {
-    [, token] = req.headers.authorization.split(' ');
-  }
-  if (!token) {
-    const error = new Error('Not authorized to access this route');
-    res.status(401);
-    return next(error);
-  }
-  try {
-    var decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log({ decoded });
-    const usersCollection = getDb().collection('users');
-    const user = await usersCollection.findOne({ _id: ObjectID(decoded.id) });
-    req.user = user;
-    console.log({ user });
+// app.post('/audits', audits);
 
-    const { id: userId, role } = decoded;
-    console.log({ userId }, { role });
-  } catch (err) {
-    console.log(err);
-    const error = new Error('Not authorized to access this route');
-
-    res.status(401);
-    return next(error);
-  }
-  next();
-};
-
-const controller = async (req, res) => {
-  console.log('stores funguje');
-  const storesCollection = getDb().collection('stores');
-  const stores = await storesCollection
-    .find({ [req.user.role]: ObjectID(req.user._id) })
-    .map((store) => ({ name: store.storeName, id: store.storeId }))
-    .toArray();
-  console.log({ stores });
-  res.json({ stores });
-};
-
-app.get('/stores', middleware, controller);
-
-const resultsController = (req, res) => {
-  console.log('body: ', req.body);
-  console.log('resultsController fungujeme');
-  res.json({
-    message: '[resultsController]: fungujeme',
-  });
-};
-
-app.post('/results', middleware, resultsController);
-
-const errorHandler = (err, req, res, next) => {
-  console.log('errorhandler');
-  res.status(res.statusCode || 500);
-  res.json({
-    success: false,
-    message: err.message,
-    //   stack: err.stack,
-  });
-};
+app.get('/audits/:storeId', audits);
 
 app.use(errorHandler);
-// temp-end
+
 module.exports = http;
