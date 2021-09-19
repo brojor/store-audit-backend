@@ -7,7 +7,7 @@
     "node": "v14.17.5"
   },
   "scripts": {
-    "start": "NODE_ENV=production node index.js",
+    "start": "node index.js",
     "test": "NODE_ENV=test mocha './test/*.js' --watch"
   },
   "keywords": [],
@@ -18,10 +18,10 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongo": "^0.1.0"
+    "mongo": "^0.1.0",
+    "bcrypt": "^5.0.1"
   },
   "devDependencies": {
-    "bcrypt": "^5.0.1",
     "chai": "^4.3.4",
     "mocha": "^9.0.1",
     "supertest": "^6.1.3"
