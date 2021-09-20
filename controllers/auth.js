@@ -22,7 +22,8 @@ const login = async (req, res, next) => {
       return next(new Error('Invalid credentials'));
     }
     const token = getSignedJwtToken({ id: user._id, role: user.role });
-    res.json({ success: true, token });
+    const fullName = `${user.firstName} ${user.lastName}`;
+    res.json({ success: true, token, fullName });
   } else {
     res.status(400);
     next(new Error('Invalid credentials'));
@@ -35,4 +36,4 @@ const getSignedJwtToken = (payload) => {
   });
 };
 
-exports.login = login
+exports.login = login;
