@@ -3,13 +3,22 @@ const ObjectID = require('mongodb').ObjectID;
 const { insertEmptyIfMissing } = require('../utils/utils');
 
 exports.stores = async (req, res) => {
-  console.log('stores funguje');
+  const { user } = req;
   const storesCollection = getDb().collection('stores');
-  const stores = await storesCollection
-    .find({ [req.user.role]: ObjectID(req.user._id) })
-    .map((store) => ({ name: store.storeName, id: store.storeId }))
-    .toArray();
-  console.log({ stores });
+  let stores;
+  if (user.role === 'topManagement') {
+    stores = await storesCollection
+      .find({})
+      .map((store) => ({ name: store.storeName, id: store.storeId }))
+      .sort({ storeName: 1 })
+      .toArray();
+  } else {
+    stores = await storesCollection
+      .find({ [user.role]: ObjectID(user._id) })
+      .map((store) => ({ name: store.storeName, id: store.storeId }))
+      .sort({ storeName: 1 })
+      .toArray();
+  }
   res.json({ stores });
 };
 
