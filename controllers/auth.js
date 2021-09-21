@@ -6,11 +6,13 @@ const login = async (req, res, next) => {
   const { username, password } = req.body;
   if (!username) {
     res.status(400);
-    next(new Error('Please provide an username'));
+    // next(new Error('Please provide an username'));
+    next(new Error('Zadejte prosím uživetelské jméno'));
   }
   if (!password) {
     res.status(400);
-    next(new Error('Please provide an password'));
+    // next(new Error('Please provide an password'));
+    next(new Error('Zadejte prosím heslo'));
   }
   const usersCollection = getDb().collection('users');
   const user = await usersCollection.findOne({ username });
@@ -19,7 +21,8 @@ const login = async (req, res, next) => {
     if (!passwordMatch) {
       console.log('špatné heslo');
       res.status(400);
-      return next(new Error('Invalid credentials'));
+      // return next(new Error('Invalid credentials'));
+      return next(new Error('Neplatné přihlašovací údaje.'));
     }
     const token = getSignedJwtToken({ id: user._id, role: user.role });
     const fullName =
@@ -30,7 +33,8 @@ const login = async (req, res, next) => {
     res.json({ success: true, token, fullName });
   } else {
     res.status(400);
-    next(new Error('Invalid credentials'));
+    // next(new Error('Invalid credentials'));
+    next(new Error('Neplatné přihlašovací údaje.'));
   }
 };
 
