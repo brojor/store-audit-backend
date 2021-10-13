@@ -67,7 +67,7 @@ exports.audits = async (req, res) => {
     stop: new Date(req.query.stop),
   };
 
-  const auditsCollection = getDb().collection('desktop_view');
+  const auditsCollection = getDb().collection('audits');
   const query = {
     storeId,
     date: { $gte: range.start, $lte: range.stop },

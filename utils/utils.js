@@ -33,7 +33,11 @@ exports.insertEmptyIfMissing = (data, dateRange) => {
     if (match) {
       return match;
     } else {
-      return { date: new Date(year, month), categories: emtyResults, totalPerc: -1 };
+      return {
+        date: new Date(year, month),
+        categories: emtyResults,
+        totalScore: { perc: -1 },
+      };
     }
   });
 };

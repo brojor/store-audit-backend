@@ -2,11 +2,11 @@ const { MongoClient } = require('mongodb');
 const env = process.env.NODE_ENV || 'development';
 require('dotenv').config({ path: './config/.env' });
 
-// const mongoURL =
-//   env === 'development'
-//     ? process.env.MONGO_URI_LOCAL
-//     : process.env.MONGO_URI_ATLAS;
-const mongoURL = 'mongodb://localhost:27017';
+const mongoURL =
+  env === 'development'
+    ? process.env.MONGO_URI_LOCAL
+    : process.env.MONGO_URI_ATLAS;
+// const mongoURL = 'mongodb://localhost:27017';
 let _db;
 
 module.exports = {

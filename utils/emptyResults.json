@@ -27,7 +27,9 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     },
     {
         "categoryNum": 2,
@@ -65,7 +67,9 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     },
     {
         "categoryNum": 3,
@@ -111,7 +115,9 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     },
     {
         "categoryNum": 4,
@@ -137,7 +143,9 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     },
     {
         "categoryNum": 5,
@@ -171,7 +179,9 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     },
     {
         "categoryNum": 6,
@@ -217,7 +227,9 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     },
     {
         "categoryNum": 7,
@@ -247,7 +259,9 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     },
     {
         "categoryNum": 8,
@@ -273,7 +287,9 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     },
     {
         "categoryNum": 9,
@@ -315,7 +331,9 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     },
     {
         "categoryNum": 10,
@@ -333,7 +351,9 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     },
     {
         "categoryNum": 11,
@@ -383,6 +403,8 @@
                 "accepted": null
             }
         ],
-        "totalPerc": -1
+        "score": {
+            "perc": -1
+        }
     }
 ]
