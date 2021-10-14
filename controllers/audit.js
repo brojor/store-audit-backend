@@ -132,6 +132,9 @@ async function getUnacceptedPoints(collection, storeId) {
     .find({ storeId })
     .sort({ date: -1 })
     .toArray();
+  if (!lastAudit) {
+    return {};
+  }
   const { _id } = lastAudit;
   return collection
     .aggregate([
