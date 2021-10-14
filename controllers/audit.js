@@ -25,9 +25,13 @@ exports.stores = async (req, res) => {
 
 exports.results = async (req, res, next) => {
   const auditsCollection = getDb().collection('audits');
-  const { storeId, results } = req.body;
+  const { storeId, results, date } = req.body;
   const auditor = req.user._id;
-  const alreadyExists = await auditExistForThisMonth(auditsCollection, storeId);
+  const alreadyExists = await auditExistForThisMonth(
+    auditsCollection,
+    storeId,
+    date
+  );
 
   if (alreadyExists) {
     res.json({
@@ -44,7 +48,7 @@ exports.results = async (req, res, next) => {
     auditsCollection
       .insertOne({
         auditor,
-        date: new Date(),
+        date: new Date(date),
         storeId,
         categories,
         totalScore,
@@ -121,9 +125,9 @@ function getCategoryRef(categories, categoryId) {
   return categories[categoryId - 1];
 }
 
-function auditExistForThisMonth(collection, storeId) {
-  const now = new Date();
-  const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+function auditExistForThisMonth(collection, storeId, date) {
+  date = new Date(date);
+  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   return collection.find({ date: { $gte: firstDayOfMonth }, storeId }).count();
 }
 
