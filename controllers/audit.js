@@ -83,22 +83,20 @@ exports.audits = async (req, res) => {
 };
 // [POST] - resultCorrection from desktop view
 exports.changeResult = async (req, res) => {
+  // TODO - lze měnit jen audit náležící přihlášenému uživateli
   const auditsCollection = getDb().collection('audits');
-  const [lastAuditInStore] = await auditsCollection
-    .find({})
-    .sort({ date: -1 })
-    .toArray();
   const editedAudit = await auditsCollection.findOne({
     _id: ObjectID(req.params.auditId),
   });
-  if(lastAuditInStore._id.toString() !== editedAudit._id.toString()){
-    return res.json({ success: false }); 
+  const [lastAuditInStore] = await auditsCollection
+    .find({ storeId: editedAudit.storeId })
+    .sort({ date: -1 })
+    .toArray();
+  // only the last audit can be changed
+  if (lastAuditInStore._id.toString() !== editedAudit._id.toString()) {
+    return res.json({ success: false });
   }
 
-  console.log();
-  // TODO
-  // - lze měnit pouze poslední audit
-  // - lze měnit jen audit náležící přihlášenému uživateli
   const { categoryPointId } = req.body;
 
   const { category, categoryPoint } = findCategoryAndPoint(
