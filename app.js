@@ -7,7 +7,13 @@ const cors = require('cors');
 
 const { protect } = require('./middleware/auth');
 const { errorHandler } = require('./middleware/error');
-const { stores, results, audits } = require('./controllers/audit');
+const {
+  stores,
+  results,
+  audits,
+  changeResult,
+} = require('./controllers/audit');
+const { individualy } = require('./controllers/summary');
 
 dotenv.config({ path: './config/.env' });
 
@@ -18,10 +24,9 @@ app.use('/auth', authRoutes);
 
 app.get('/stores', protect, stores);
 app.post('/results', protect, results);
-
-// app.post('/audits', audits);
-
 app.get('/audits/:storeId', audits);
+app.post('/audits/:auditId', changeResult);
+app.get('/summary/individualy', individualy);
 
 app.use(errorHandler);
 

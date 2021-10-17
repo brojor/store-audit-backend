@@ -23,6 +23,7 @@ exports.stores = async (req, res) => {
   res.json({ stores });
 };
 
+// (POST) save results of audit from mobile app
 exports.results = async (req, res, next) => {
   const auditsCollection = getDb().collection('audits');
   const { storeId, results, date } = req.body;
@@ -63,7 +64,7 @@ exports.results = async (req, res, next) => {
       });
   }
 };
-
+// [GET] serve results from db
 exports.audits = async (req, res) => {
   const { storeId } = req.params;
   const range = {
@@ -79,6 +80,51 @@ exports.audits = async (req, res) => {
   const audits = await auditsCollection.find(query).toArray();
   const finalResult = insertEmptyIfMissing(audits, range);
   res.json(finalResult);
+};
+// [POST] - resultCorrection from desktop view
+exports.changeResult = async (req, res) => {
+  // TODO
+  // - lze měnit pouze poslední audit
+  // - lze měnit jen audit náležící přihlášenému uživateli
+  const { auditId } = req.params;
+  const { categoryPointId } = req.body;
+  const weight = seed.weights[categoryPointId];
+  const categoryId = Number(categoryPointId.slice(1, 3));
+  const auditsCollection = getDb().collection('audits');
+  const audit = await auditsCollection.findOne({ _id: ObjectID(auditId) });
+  const { categories } = audit;
+  const category = categories.find(
+    (category) => category.categoryId === categoryId
+  );
+
+  const categoryPoint = category.categoryPoints.find(
+    (catPoint) => catPoint.id === categoryPointId
+  );
+
+  const previousNumOfRepetitions = await getNumOfRecurring(audit.date, categoryPointId);
+
+  categoryPoint.accepted = !categoryPoint.accepted;
+  const unacceptedInARow = !categoryPoint.accepted
+    ? previousNumOfRepetitions + 1 || 1
+    : null;
+
+  if (categoryPoint.accepted) {
+    delete categoryPoint.unacceptedInARow;
+  } else {
+    categoryPoint.unacceptedInARow = unacceptedInARow;
+  }
+
+  const operation = categoryPoint.accepted ? 'add' : 'substract';
+
+  changeScore(operation, category.score, weight);
+  changeScore(operation, audit.totalScore, weight);
+
+  auditsCollection
+    .save(audit)
+    .then(({ result }) => console.log(result))
+    .catch((err) => console.log(err));
+
+  res.json({ success: true });
 };
 
 async function buildDesktopView(results, auditsCollection, storeId) {
@@ -111,6 +157,15 @@ async function buildDesktopView(results, auditsCollection, storeId) {
 function addScore(target, accepted, numOfPoints) {
   target.available += numOfPoints;
   target.earned += accepted ? numOfPoints : 0;
+  target.perc = (100 * target.earned) / target.available;
+}
+
+function changeScore(operation, target, numOfPoints) {
+  const operations = {
+    add: () => (target.earned += numOfPoints),
+    substract: () => (target.earned -= numOfPoints),
+  };
+  operations[operation]();
   target.perc = (100 * target.earned) / target.available;
 }
 
@@ -172,4 +227,20 @@ async function getUnacceptedPoints(collection, storeId) {
         return obj;
       }, {});
     });
+}
+
+async function getNumOfRecurring(actualAuditDate, categoryPointId) {
+  const auditsCollection = getDb().collection('audits');
+  const categoryId = Number(categoryPointId.slice(1, 3));
+  const [previousAudit] = await auditsCollection
+    .find({ date: { $lt: actualAuditDate } })
+    .sort({ date: -1 })
+    .toArray();
+  const category = previousAudit.categories.find(
+    (category) => category.categoryId == categoryId
+  );
+  const categoryPoint = category.categoryPoints.find(
+    (categoryPoint) => categoryPoint.id === categoryPointId
+  );
+  return categoryPoint.unacceptedInARow;
 }
