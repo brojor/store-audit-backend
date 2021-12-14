@@ -13,7 +13,7 @@ const {
   audits,
   changeResult,
 } = require('./controllers/audit');
-// const { individualy } = require('./controllers/summary');
+const { chart } = require('./controllers/summary');
 
 dotenv.config({ path: './config/.env' });
 
@@ -26,7 +26,7 @@ app.get('/stores', protect, stores);
 app.post('/results', protect, results);
 app.get('/audits/:storeId', audits);
 app.post('/audits/:auditId', changeResult);
-// app.get('/summary/individualy', individualy);
+app.get('/summary', chart);
 
 app.use(errorHandler);
 
