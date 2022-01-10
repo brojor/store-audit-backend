@@ -19,6 +19,7 @@ function getExpectedMonths(range) {
     arr.push({ year: date.getFullYear(), month: date.getMonth() });
     date.setMonth(date.getMonth() + 1);
   }
+  console.log('EXPECTED MONTHS: ', arr);
   return arr;
 }
 

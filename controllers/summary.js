@@ -34,7 +34,8 @@ exports.deficiencies = async (req, res) => {
   }
 
   const result = await getDb()
-    .collection('audits_fake')
+    // .collection('audits_fake')
+    .collection('audits')
     .aggregate(finalQuery)
     .toArray();
 

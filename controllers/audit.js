@@ -72,6 +72,8 @@ exports.audits = async (req, res) => {
     stop: new Date(req.query.stop),
   };
 
+  console.log('DEBUG: ', { range });
+
   const auditsCollection = getDb().collection('audits');
   const query = {
     storeId,
