@@ -132,6 +132,7 @@ async function buildDesktopView(results, auditsCollection, storeId) {
   const categories = [];
   const totalScore = { available: 0, earned: 0, perc: 0 };
   const unacceptedPoints = await getUnacceptedPoints(auditsCollection, storeId);
+  console.log({ unacceptedPoints });
 
   Object.entries(results).forEach(([id, result]) => {
     const categoryId = Number(id.slice(1, 3));
@@ -252,3 +253,5 @@ function findCategoryAndPoint(audit, categoryPointId) {
   );
   return { category, categoryPoint };
 }
+
+exports.buildDesktopView = buildDesktopView;

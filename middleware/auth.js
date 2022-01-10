@@ -4,7 +4,6 @@ const ObjectID = require('mongodb').ObjectID;
 
 
 exports.protect = async (req, res, next) => {
-    // something
     const { authorization } = req.headers;
     console.log('middleware: ', { authorization });
     let token;
