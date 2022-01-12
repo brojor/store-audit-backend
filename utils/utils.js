@@ -1,26 +1,16 @@
 const emtyResults = require('./emptyResults.json');
 
-function monthDiff(dateFrom, dateTo) {
-  console.log('hello from monthDiff');
-  console.log({ dateFrom }, { dateTo });
-  return (
-    dateTo.getMonth() -
-    dateFrom.getMonth() +
-    12 * (dateTo.getFullYear() - dateFrom.getFullYear())
-  );
-}
-
-function getExpectedMonths(range) {
-  const countOfMonths = monthDiff(range.start, range.stop);
-  const arr = [];
-  const date = new Date(range.start);
-
-  for (let index = 0; index <= countOfMonths; index++) {
-    arr.push({ year: date.getFullYear(), month: date.getMonth() });
-    date.setMonth(date.getMonth() + 1);
+function getExpectedMonths({ start, stop }) {
+  const expectedMonths = [];
+  const date = new Date(start);
+  while (date <= new Date(stop)) {
+    expectedMonths.push({
+      year: date.getFullYear(),
+      month: date.getUTCMonth() + 1,
+    });
+    date.setUTCMonth(date.getUTCMonth() + 1);
   }
-  console.log('EXPECTED MONTHS: ', arr);
-  return arr;
+  return expectedMonths;
 }
 
 exports.insertEmptyIfMissing = (data, dateRange) => {
@@ -29,16 +19,19 @@ exports.insertEmptyIfMissing = (data, dateRange) => {
   return expectedMonths.map(({ month, year }) => {
     const match = data.find(
       (audit) =>
-        audit.date.getMonth() === month && audit.date.getFullYear() === year
+        audit.date.getUTCMonth() +1 === month &&
+        audit.date.getFullYear() === year
     );
     if (match) {
       return match;
     } else {
       return {
-        date: new Date(year, month),
+        date: new Date(year, month -1),
         categories: emtyResults,
         totalScore: { perc: -1 },
       };
     }
   });
 };
+
+exports.getExpectedMonths = getExpectedMonths;
