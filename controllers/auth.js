@@ -22,7 +22,7 @@ const login = async (req, res, next) => {
       console.log('špatné heslo');
       res.status(400);
       // return next(new Error('Invalid credentials'));
-      return next(new Error('Neplatné přihlašovací údaje.'));
+      return next(new Error('Neplatné přihlašovací údaje'));
     }
     const token = getSignedJwtToken({ id: user._id, role: user.role });
     const fullName =
@@ -32,9 +32,9 @@ const login = async (req, res, next) => {
 
     res.json({ success: true, token, fullName });
   } else {
-    res.status(400);
+    res.status(401);
     // next(new Error('Invalid credentials'));
-    next(new Error('Neplatné přihlašovací údaje.'));
+    next(new Error('Neplatné přihlašovací údaje'));
   }
 };
 

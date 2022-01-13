@@ -20,42 +20,50 @@ describe('POST /auth/login', function () {
       }
     });
   });
-  it('should respond with "success: true" and valid "token", when receives valid credentials', async function () {
+  it('should respond with "success: true" and valid token, when receives valid credentials', async function () {
     const response = await request(app)
       .post('/auth/login')
-      .send({ username: 'eduduf', password: "heslo" })
+      .send({ username: 'kaspav', password: 'heslo' })
       .expect(200);
-      expect(response.body.success).to.be.true;
-      expect(response.body).to.have.all.keys('success', 'token');;
-      expect(response.body.token).to.be.string
-      expect(response.body.token.split(".")).to.have.lengthOf(3)
+    expect(response.body.success).to.be.true;
+    expect(response.body).to.have.all.keys('success', 'token', 'fullName');
+    expect(response.body.token).to.be.string;
+    expect(response.body.token.split('.')).to.have.lengthOf(3);
   });
-  it('should failed with message "Invalid credentials", when receives invalid credentials', async function () {
+  it('should failed with message "Neplatné přihlašovací údaje", when receives invalid credentials', async function () {
     const response = await request(app)
       .post('/auth/login')
-      .send({ username: 'abcdefg', password: "ijklmn" })
-      .expect(400);
-      expect(response.body.success).to.be.false;
-      expect(response.body).to.not.have.property('token');
-      expect(response.body.message).to.equal('Invalid credentials');
+      .send({ username: 'abcdefg', password: 'ijklmn' })
+      .expect(401);
+    expect(response.body.success).to.be.false;
+    expect(response.body).to.not.have.property('token');
+    expect(response.body.message).to.equal('Neplatné přihlašovací údaje');
   });
-  it('should failed with message "Invalid credentials", when user is valid, but password invalid', async function () {
+  it('should failed with message "Neplatné přihlašovací údaje", when user is valid, but password invalid', async function () {
     const response = await request(app)
       .post('/auth/login')
-      .send({ username: 'eduduf', password: "ijklmn" })
-      .expect(400);
-      expect(response.body.success).to.be.false;
-      expect(response.body).to.not.have.property('token');
-      expect(response.body.message).to.equal('Invalid credentials');
+      .send({ username: 'eduduf', password: 'ijklmn' })
+      .expect(401);
+    expect(response.body.success).to.be.false;
+    expect(response.body).to.not.have.property('token');
+    expect(response.body.message).to.equal('Neplatné přihlašovací údaje');
   });
-  it('should failed with message "Please provide an username"', async function () {
+  it('should failed with message "Zadejte prosím uživetelské jméno"', async function () {
     const response = await request(app)
       .post('/auth/login')
-      .send({password: "heslo"})
+      .send({ password: 'heslo' })
       .expect(400);
-      expect(response.body.success).to.be.false;
-      expect(response.body).to.not.have.property('token');
-      expect(response.body.message).to.equal('Please provide an username');
+    expect(response.body.success).to.be.false;
+    expect(response.body).to.not.have.property('token');
+    expect(response.body.message).to.equal('Zadejte prosím uživetelské jméno');
+  });
+  it('should failed with message "Zadejte prosím heslo"', async function () {
+    const response = await request(app)
+      .post('/auth/login')
+      .send({ username: 'Pepa' })
+      .expect(400);
+    expect(response.body.success).to.be.false;
+    expect(response.body).to.not.have.property('token');
+    expect(response.body.message).to.equal('Zadejte prosím heslo');
   });
 });
-
