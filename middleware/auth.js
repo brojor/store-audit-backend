@@ -5,7 +5,7 @@ const ObjectID = require('mongodb').ObjectID;
 
 exports.protect = async (req, res, next) => {
     const { authorization } = req.headers;
-    console.log('middleware: ', { authorization });
+    // console.log('middleware: ', { authorization });
     let token;
   
     if (authorization && authorization.startsWith('Bearer')) {
@@ -18,14 +18,14 @@ exports.protect = async (req, res, next) => {
     }
     try {
       var decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log({ decoded });
+      // console.log({ decoded });
       const usersCollection = getDb().collection('users');
       const user = await usersCollection.findOne({ _id: ObjectID(decoded.id) });
       req.user = user;
-      console.log({ user });
+      // console.log({ user });
   
       const { id: userId, role } = decoded;
-      console.log({ userId }, { role });
+      // console.log({ userId }, { role });
     } catch (err) {
       console.log(err);
       const error = new Error('Not authorized to access this route');

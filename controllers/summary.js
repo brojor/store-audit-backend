@@ -1,6 +1,7 @@
 const { getDb } = require('../db/index');
 const { ObjectId } = require('mongodb');
 const { byCategory, byCategoryPoints } = require('../db/chartQueries');
+const { get } = require('express/lib/response');
 
 exports.deficiencies = async (req, res) => {
   const { id, type } = req.params;
@@ -75,25 +76,59 @@ exports.deficiencies = async (req, res) => {
 // };
 
 exports.storeSelect = async (req, res) => {
-  const allStoresCount = await getCountOfAllStores();
+  const { role } = req.user;
+  switch (role) {
+    case 'topManagement':
+      const allStoresCount = await getCountOfAllStores();
+      const regionals = await getCountOfStoresByManagers();
+      const individualBranches = await getAllIndividualBranches();
 
-  const regionals = await getCountOfStoresByManagers();
-  const individualBranches = await getDb()
-    .collection('stores')
-    .find({})
-    .sort({ storeName: 1 })
-    .map(({ storeName, storeId: id }) => ({
-      title: storeName,
-      type: 'individual',
-      id,
-    }))
-    .toArray();
+      return res.json([
+        {
+          title: `Všechny pobočky (${allStoresCount})`,
+          type: 'group',
+          id: 'all',
+        },
+        ...regionals,
+        ...individualBranches,
+      ]);
+    case 'regionalManager':
+      const branchesUnderManager = await getDb()
+        .collection('stores')
+        .find({ regionalManager: req.user._id })
+        .sort({ storeName: 1 })
+        .map(({ storeName, storeId: id }) => ({
+          title: storeName,
+          type: 'individual',
+          id,
+        }))
+        .toArray();
+      const countOfBranches = branchesUnderManager.length;
+      return res.json([
+        {
+          title: `Všechny pobočky (${countOfBranches})`,
+          type: 'group',
+          id: req.user._id,
+        },
+        ...branchesUnderManager,
+      ]);
+      break;
+    case 'storeManager':
+      console.log('store man');
+      const store = await getDb()
+        .collection('stores')
+        .find({ storeManager: req.user._id })
+        .map(({ storeName, storeId: id }) => ({
+          title: storeName,
+          type: 'individual',
+          id,
+        }))
+        .toArray();
+      return res.json([...store]);
 
-  res.json([
-    { title: `Všechny pobočky (${allStoresCount})`, type: 'group', id: 'all' },
-    ...regionals,
-    ...individualBranches,
-  ]);
+    default:
+      throw new Error('Invalid role');
+  }
 };
 
 function getCountOfAllStores() {
@@ -125,6 +160,19 @@ function getCountOfStoresByManagers() {
     .map(({ fullName, count, id }) => ({
       title: `Region - ${fullName} (${count})`,
       type: 'group',
+      id,
+    }))
+    .toArray();
+}
+
+function getAllIndividualBranches() {
+  return getDb()
+    .collection('stores')
+    .find({})
+    .sort({ storeName: 1 })
+    .map(({ storeName, storeId: id }) => ({
+      title: storeName,
+      type: 'individual',
       id,
     }))
     .toArray();

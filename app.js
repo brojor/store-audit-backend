@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(morgan('tiny'));
 
 app.use('/auth', authRoutes);
-app.use('/chart', chartRoutes);
+app.use('/chart', protect, chartRoutes);
 
 app.get('/stores', protect, stores);
 app.post('/results', protect, results);
