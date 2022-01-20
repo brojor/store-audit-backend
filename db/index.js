@@ -3,7 +3,7 @@ const env = process.env.NODE_ENV || 'development';
 require('dotenv').config({ path: './config/.env' });
 
 const mongoURL =
-  env === 'development'
+  env === 'development' || env === "test"
     ? process.env.MONGO_URI_LOCAL
     : process.env.MONGO_URI_ATLAS;
 // const mongoURL = 'mongodb://localhost:27017';
