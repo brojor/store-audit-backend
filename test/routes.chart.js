@@ -2,23 +2,26 @@ const request = require('supertest');
 const { expect } = require('chai');
 const { initDb } = require('../db/index');
 
-const { kaspav, loumir, zahmon } = require('./responses.json');
-
 const app = require('../app');
+const auth = {};
+
+before(function (done) {
+  initDb((err, db) => {
+    if (err) {
+      console.log('Could not connect to mongodb: ', err);
+      done(err);
+    } else {
+      console.log('Db initialized properly');
+      done();
+    }
+  });
+});
+
+before(loginUser({ username: 'kaspav', password: 'heslo' }, auth));
+before(loginUser({ username: 'loumir', password: 'heslo' }, auth));
+before(loginUser({ username: 'zahmon', password: 'heslo' }, auth));
 
 describe('GET chart/store-filter-options', function () {
-  before(function (done) {
-    initDb((err, db) => {
-      if (err) {
-        console.log('Could not connect to mongodb: ', err);
-        done(err);
-      } else {
-        console.log('Db initialized properly');
-        done();
-      }
-    });
-  });
-
   it('Should fail due to user not logging in', async function () {
     const response = await request(app)
       .get('/chart/store-filter-options')
@@ -30,9 +33,6 @@ describe('GET chart/store-filter-options', function () {
     );
   });
 
-  const auth = {};
-
-  before(loginUser({ username: 'kaspav', password: 'heslo' }, auth));
   it('It does not fail after the user logs in', async function () {
     const response = await request(app)
       .get('/chart/store-filter-options')
@@ -44,36 +44,9 @@ describe('GET chart/store-filter-options', function () {
       expect(item).to.have.all.keys('id', 'title', 'type');
     });
   });
-
-  it('Send right response to TopManager', async function () {
-    const response = await request(app)
-      .get('/chart/store-filter-options')
-      .set('Authorization', 'Bearer ' + auth.kaspav)
-      .expect(200);
-    expect(response.body).to.deep.equal(kaspav);
-  });
-
-  before(loginUser({ username: 'loumir', password: 'heslo' }, auth));
-  it('Send right response to RegionalManager', async function () {
-    const response = await request(app)
-      .get('/chart/store-filter-options')
-      .set('Authorization', 'Bearer ' + auth.loumir)
-      .expect(200);
-    expect(response.body).to.deep.equal(loumir);
-  });
-
-  before(loginUser({ username: 'zahmon', password: 'heslo' }, auth));
-  it('Send right response to storeManager', async function () {
-    const response = await request(app)
-      .get('/chart/store-filter-options')
-      .set('Authorization', 'Bearer ' + auth.zahmon)
-      .expect(200);
-    expect(response.body).to.deep.equal(zahmon);
-  });
 });
 
 describe('GET chart/aggregated/all', function () {
-  // before(loginUser({ username: 'loumir', password: 'heslo' }, auth));
   it('It should fail if the user role is regionalManager', async function () {
     const response = await request(app)
       .get('/chart/aggregated/all')
