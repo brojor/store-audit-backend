@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "NODE_ENV=development node index.js",
-    "test": "NODE_ENV=test mocha './test/*.js' --watch"
+    "test": "NODE_ENV=test mocha './test/*.js' --watch --require './test/hooks.js'"
   },
   "keywords": [],
   "author": "",

@@ -4,19 +4,8 @@ const { expect } = require('chai');
 const app = require('../app');
 const { initDb } = require('../db/index');
 const tests = require('./tests-data');
+const { loginUser } = require('./utils');
 const auth = {};
-
-before(function (done) {
-  initDb((err, db) => {
-    if (err) {
-      console.log('Could not connect to mongodb: ', err);
-      done(err);
-    } else {
-      console.log('Db initialized properly');
-      done();
-    }
-  });
-});
 
 for (const testSuite in tests) {
   const { username, requests, responses } = tests[testSuite];

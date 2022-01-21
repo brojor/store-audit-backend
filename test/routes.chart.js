@@ -11,18 +11,6 @@ const query = {
 };
 const auth = {};
 
-before(function (done) {
-  initDb((err, db) => {
-    if (err) {
-      console.log('Could not connect to mongodb: ', err);
-      done(err);
-    } else {
-      console.log('Db initialized properly');
-      done();
-    }
-  });
-});
-
 before(loginUser({ username: 'kaspav', password: 'heslo' }, auth));
 before(loginUser({ username: 'loumir', password: 'heslo' }, auth));
 before(loginUser({ username: 'zahmon', password: 'heslo' }, auth));

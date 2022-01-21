@@ -9,17 +9,6 @@ const app = require('../app');
 // const testUser = { username: 'lojzajede', password: 'heslo123' };
 
 describe('POST /auth/login', function () {
-  before(function (done) {
-    initDb((err, db) => {
-      if (err) {
-        console.log('Could not connect to mongodb: ', err);
-        done(err);
-      } else {
-        console.log('Db initialized properly');
-        done();
-      }
-    });
-  });
   it('should respond with "success: true" and valid token, when receives valid credentials', async function () {
     const response = await request(app)
       .post('/auth/login')
