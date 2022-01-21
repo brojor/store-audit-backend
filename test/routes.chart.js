@@ -3,6 +3,12 @@ const { expect } = require('chai');
 const { initDb } = require('../db/index');
 
 const app = require('../app');
+const query = {
+  after: '2021-09-01T00:00:00.000Z',
+  before: '2022-02-28T23:59:59.999Z',
+  detailLevel: 'categories',
+  sortBy: 'id',
+};
 const auth = {};
 
 before(function (done) {
@@ -133,6 +139,7 @@ describe('GET chart/aggregated/:regionId', function () {
     const response = await request(app)
       .get('/chart/aggregated/60c39ce6f48a0b1d51d3922d')
       .set('Authorization', 'Bearer ' + auth.loumir)
+      .query(query)
       .expect(200);
     response.body.forEach((item) => {
       expect(item).to.have.all.keys('id', 'deficiencies', 'label');
@@ -167,6 +174,7 @@ describe('GET chart/individual/:storeId', function () {
     const response = await request(app)
       .get('/chart/individual/R4221')
       .set('Authorization', 'Bearer ' + auth.loumir)
+      .query(query)
       .expect(200);
     response.body.forEach((item) => {
       expect(item).to.have.all.keys('id', 'deficiencies', 'label');
@@ -176,6 +184,7 @@ describe('GET chart/individual/:storeId', function () {
     const response = await request(app)
       .get('/chart/individual/R4105')
       .set('Authorization', 'Bearer ' + auth.zahmon)
+      .query(query)
       .expect(200);
     response.body.forEach((item) => {
       expect(item).to.have.all.keys('id', 'deficiencies', 'label');

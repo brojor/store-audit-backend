@@ -1,11 +1,12 @@
 const { getDb } = require('../db/index');
+const { ObjectId } = require('mongodb');
 
-const getStoresByUser = (userId, role) => {
-  return getDb()
+exports.getStoresByUser = ({ _id: userId, role }) =>
+  getDb()
     .collection('stores')
-    .find({ [role]: userId })
+    .find({ [role]: ObjectId(userId) })
     .map(({ storeId }) => storeId)
     .toArray();
-};
 
-exports.getStoresByUser = getStoresByUser;
+exports.getDeficiencies = (query) =>
+  getDb().collection('audits').aggregate(query).toArray();

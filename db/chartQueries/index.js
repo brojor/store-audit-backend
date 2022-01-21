@@ -58,4 +58,4 @@ const byCategory = [
   },
 ];
 
-module.exports = { byCategory, byCategoryPoints };
+module.exports = { categories: byCategory, points: byCategoryPoints };
