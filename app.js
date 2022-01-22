@@ -16,18 +16,19 @@ const {
   changeResult,
 } = require('./controllers/audit');
 
-
 dotenv.config({ path: './config/.env' });
 
 app.use(cors());
 app.use(express.json());
-app.use(morgan('tiny'));
+// app.use(morgan('tiny'));
 
 app.use('/auth', authRoutes);
-app.use('/chart', protect, chartRoutes);
+app.use(protect);
+app.get('/protected-route', (req, res) => res.sendStatus(200));
+app.use('/chart', chartRoutes);
 
-app.get('/stores', protect, stores);
-app.post('/results', protect, results);
+app.get('/stores', stores);
+app.post('/results', results);
 app.get('/audits/:storeId', audits);
 app.post('/audits/:auditId', changeResult);
 
