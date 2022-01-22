@@ -26,17 +26,4 @@ for (const testSuite in tests) {
   });
 }
 
-function loginUser(credentials, auth) {
-  return function (done) {
-    request(app)
-      .post('/auth/login')
-      .send(credentials)
-      .expect(210)
-      .end(onResponse);
 
-    function onResponse(err, res) {
-      auth[credentials.username] = res.body.token;
-      return done();
-    }
-  };
-}

@@ -1,8 +1,9 @@
 const request = require('supertest');
 const { expect } = require('chai');
-const { initDb } = require('../db/index');
 
 const app = require('../app');
+const { loginUser } = require('./utils');
+
 const query = {
   after: '2021-09-01T00:00:00.000Z',
   before: '2022-02-28T23:59:59.999Z',
@@ -179,18 +180,3 @@ describe('GET chart/individual/:storeId', function () {
     });
   });
 });
-
-function loginUser(credentials, auth) {
-  return function (done) {
-    request(app)
-      .post('/auth/login')
-      .send(credentials)
-      .expect(200)
-      .end(onResponse);
-
-    function onResponse(err, res) {
-      auth[credentials.username] = res.body.token;
-      return done();
-    }
-  };
-}
