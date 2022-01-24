@@ -12,12 +12,27 @@ describe('POST /auth/login', function () {
   it('should respond with "success: true" and valid token, when receives valid credentials', async function () {
     const response = await request(app)
       .post('/auth/login')
-      .send({ username: 'kaspav', password: 'heslo' })
+      .send({ username: 'valluc', password: 'heslo' })
       .expect(200);
-    expect(response.body.success).to.be.true;
     expect(response.body).to.have.all.keys('success', 'token', 'fullName');
+    expect(response.body.success).to.be.true;
     expect(response.body.token).to.be.string;
     expect(response.body.token.split('.')).to.have.lengthOf(3);
+    expect(response.body.fullName.split(' ')).to.have.lengthOf(2);
+  });
+  it('There should be a crown icon in the full name if the user is in top management', async function () {
+    const response = await request(app)
+      .post('/auth/login')
+      .send({ username: 'kaspav', password: 'heslo' })
+      .expect(200);
+    expect(response.body).to.have.all.keys('success', 'token', 'fullName');
+    expect(response.body.success).to.be.true;
+    expect(response.body.token).to.be.string;
+    expect(response.body.token.split('.')).to.have.lengthOf(3);
+    expect(response.body.fullName.split(' '))
+      .to.be.an('array')
+      .that.have.lengthOf(3)
+      .and.includes('👑');
   });
   it('should failed with message "Neplatné přihlašovací údaje", when receives invalid credentials', async function () {
     const response = await request(app)

@@ -11,7 +11,7 @@ describe('protect middleware', () => {
   it('It should fail when user is not logged id', async () => {
     await request(app).get('/protected-route').expect(401);
   });
-  it.only('It should fail when token is malformed', async () => {
+  it('It should fail when token is malformed', async () => {
     await request(app)
       .get('/protected-route')
       .set('Authorization', `Bearer ${auth.zahmon.slice(0, -1)}`)
