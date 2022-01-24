@@ -1,11 +1,50 @@
 const { getDb } = require('../db/index');
 const { ObjectId } = require('mongodb');
 
-exports.getStoresByUser = ({ _id: userId, role }) =>
+const callbacks = {
+  idOnly: ({ storeId }) => storeId,
+  titleAndId: ({ storeName, storeId: id }) => ({
+    title: storeName,
+    type: 'individual',
+    id,
+  }),
+};
+
+exports.getStoresByUser = ({ _id: userId, role }, cbName = 'idOnly') =>
   getDb()
     .collection('stores')
-    .find({ [role]: ObjectId(userId) })
-    .map(({ storeId }) => storeId)
+    .find(role === 'topManagement' ? {} : { [role]: ObjectId(userId) })
+    .sort({ storeName: 1 })
+    .map(callbacks[cbName])
+    .toArray();
+
+exports.getStoresInRegion = () =>
+  getDb()
+    .collection('users')
+    .aggregate([
+      { $match: { role: 'regionalManager' } },
+      { $sort: { lastName: 1 } },
+      {
+        $lookup: {
+          from: 'stores',
+          localField: '_id',
+          foreignField: 'regionalManager',
+          as: 'stores',
+        },
+      },
+      {
+        $project: {
+          id: '$_id',
+          fullName: { $concat: ['$firstName', ' ', '$lastName'] },
+          count: { $size: '$stores' },
+        },
+      },
+    ])
+    .map(({ fullName, count, id }) => ({
+      title: `Region - ${fullName} (${count})`,
+      type: 'group',
+      id,
+    }))
     .toArray();
 
 exports.getDeficiencies = (query) =>
