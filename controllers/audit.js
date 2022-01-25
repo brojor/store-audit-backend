@@ -3,7 +3,13 @@ const ObjectID = require('mongodb').ObjectID;
 const { insertEmptyIfMissing } = require('../utils/utils');
 const seed = require('../seed.json');
 const { getStoresByUser } = require('../model/stores');
-const { getAuditResults } = require('../model/audits');
+const {
+  getAuditResults,
+  getAuditById,
+  getLastSavedAudit,
+  getNumOfDeficienciesRepetitions,
+  saveAudit,
+} = require('../model/audits');
 
 exports.stores = async (req, res) => {
   const stores = await getStoresByUser(req.user, 'nameAndId');
@@ -63,27 +69,22 @@ exports.audits = async (req, res) => {
 // [POST] - resultCorrection from desktop view
 exports.changeResult = async (req, res) => {
   // TODO - lze měnit jen audit náležící přihlášenému uživateli
-  const auditsCollection = getDb().collection('audits');
-  const editedAudit = await auditsCollection.findOne({
-    _id: ObjectID(req.params.auditId),
-  });
-  const [lastAuditInStore] = await auditsCollection
-    .find({ storeId: editedAudit.storeId })
-    .sort({ date: -1 })
-    .toArray();
+  const { auditId } = req.params;
+  const { categoryPointId } = req.body;
+
+  const editedAudit = await getAuditById(auditId);
+  const lastAuditInDb = await getLastSavedAudit(editedAudit.storeId);
   // only the last audit can be changed
-  if (lastAuditInStore._id.toString() !== editedAudit._id.toString()) {
+  if (lastAuditInDb._id.toString() !== editedAudit._id.toString()) {
     return res.json({ success: false });
   }
-
-  const { categoryPointId } = req.body;
 
   const { category, categoryPoint } = findCategoryAndPoint(
     editedAudit,
     categoryPointId
   );
-  const previousNumOfRepetitions = await getNumOfRepetitions(
-    editedAudit.date,
+  const previousNumOfRepetitions = await getNumOfDeficienciesRepetitions(
+    editedAudit,
     categoryPointId
   );
 
@@ -99,12 +100,13 @@ exports.changeResult = async (req, res) => {
   changeScore(categoryPoint.accepted, category.score, weight);
   changeScore(categoryPoint.accepted, editedAudit.totalScore, weight);
 
-  auditsCollection
-    .save(editedAudit)
-    .then(({ result }) => console.log(result))
+  saveAudit(editedAudit)
+    .then(({ result }) => {
+      if (result.ok) {
+        res.json({ success: true });
+      }
+    })
     .catch((err) => console.log(err));
-
-  res.json({ success: true });
 };
 
 async function buildDesktopView(results, auditsCollection, storeId) {
