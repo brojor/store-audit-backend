@@ -3,6 +3,7 @@ const ObjectID = require('mongodb').ObjectID;
 const { insertEmptyIfMissing } = require('../utils/utils');
 const seed = require('../seed.json');
 const { getStoresByUser } = require('../model/stores');
+const { getAuditResults } = require('../model/audits');
 
 exports.stores = async (req, res) => {
   const stores = await getStoresByUser(req.user, 'nameAndId');
@@ -53,21 +54,11 @@ exports.results = async (req, res, next) => {
 // [GET] serve results from db
 exports.audits = async (req, res) => {
   const { storeId } = req.params;
-  const range = {
-    start: new Date(req.query.start),
-    stop: new Date(req.query.stop),
-  };
 
-  console.log('DEBUG: ', { range });
+  const resultsFromDb = await getAuditResults(storeId, req.query);
+  const wholeSemester = insertEmptyIfMissing(resultsFromDb, req.query);
 
-  const auditsCollection = getDb().collection('audits');
-  const query = {
-    storeId,
-    date: { $gte: range.start, $lte: range.stop },
-  };
-  const audits = await auditsCollection.find(query).toArray();
-  const finalResult = insertEmptyIfMissing(audits, range);
-  res.json(finalResult);
+  res.json(wholeSemester);
 };
 // [POST] - resultCorrection from desktop view
 exports.changeResult = async (req, res) => {
