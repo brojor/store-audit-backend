@@ -8,6 +8,7 @@ const callbacks = {
     type: 'individual',
     id,
   }),
+  nameAndId: (store) => ({ name: store.storeName, id: store.storeId }),
 };
 
 exports.getStoresByUser = ({ _id: userId, role }, cbName = 'idOnly') =>

@@ -2,24 +2,10 @@ const { getDb } = require('../db/index');
 const ObjectID = require('mongodb').ObjectID;
 const { insertEmptyIfMissing } = require('../utils/utils');
 const seed = require('../seed.json');
+const { getStoresByUser } = require('../model/stores');
 
 exports.stores = async (req, res) => {
-  const { user } = req;
-  const storesCollection = getDb().collection('stores');
-  let stores;
-  if (user.role === 'topManagement') {
-    stores = await storesCollection
-      .find({})
-      .map((store) => ({ name: store.storeName, id: store.storeId }))
-      .sort({ storeName: 1 })
-      .toArray();
-  } else {
-    stores = await storesCollection
-      .find({ [user.role]: ObjectID(user._id) })
-      .map((store) => ({ name: store.storeName, id: store.storeId }))
-      .sort({ storeName: 1 })
-      .toArray();
-  }
+  const stores = await getStoresByUser(req.user, 'nameAndId');
   res.json({ stores });
 };
 
