@@ -30,7 +30,16 @@ exports.getNumOfDeficienciesRepetitions = async (audit, categoryPointId) => {
   return unacceptedInARow;
 };
 
-exports.saveAudit = (audit) => getDb().collection('audits').save(audit);
+exports.saveAudit = (audit) =>
+  getDb()
+    .collection('audits')
+    .replaceOne({ _id: audit._id }, audit)
+    .then(({ result: { n, nModified, ok } }) => {
+      if (n === 1 && nModified === 1 && ok === 1) {
+        return { success: true };
+      }
+      return { success: false };
+    });
 
 const getPreviousAudit = ({ date: currentAuditDate, storeId }) =>
   getDb()

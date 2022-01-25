@@ -101,11 +101,7 @@ exports.changeResult = async (req, res) => {
   changeScore(categoryPoint.accepted, editedAudit.totalScore, weight);
 
   saveAudit(editedAudit)
-    .then(({ result }) => {
-      if (result.ok) {
-        res.json({ success: true });
-      }
-    })
+    .then((result) => res.json(result))
     .catch((err) => console.log(err));
 };
 
