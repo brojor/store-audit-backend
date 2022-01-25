@@ -9,6 +9,9 @@ const {
   getLastSavedAudit,
   getNumOfDeficienciesRepetitions,
   saveAudit,
+  thisMonthAlreadyDone,
+  getUnacceptedPoints,
+  insertAuditResult,
 } = require('../model/audits');
 
 exports.stores = async (req, res) => {
@@ -21,42 +24,27 @@ exports.results = async (req, res, next) => {
   const auditsCollection = getDb().collection('audits');
   const { storeId, results, date } = req.body;
   const auditor = req.user._id;
-  const alreadyExists = await auditExistForThisMonth(
-    auditsCollection,
-    storeId,
-    date
-  );
+
+  const alreadyExists = await thisMonthAlreadyDone(storeId, date);
 
   if (alreadyExists) {
-    res.json({
+    return res.json({
       success: false,
       message: 'V této prodejně byl již tento měsíc audit proveden.',
     });
-  } else {
-    const { categories, totalScore } = await buildDesktopView(
-      results,
-      auditsCollection,
-      storeId
-    );
-
-    auditsCollection
-      .insertOne({
-        auditor,
-        date: new Date(date),
-        storeId,
-        categories,
-        totalScore,
-      })
-      .then(() => {
-        res.json({ success: true });
-      })
-      .catch((err) => {
-        const error = new Error(`Error while inserting into database: ${err}`);
-        res.status(500);
-        next(error);
-      });
   }
+  const { categories, totalScore } = await buildDesktopView(results, storeId);
+  insertAuditResult({ auditor, date, storeId, categories, totalScore })
+    .then(() => {
+      res.json({ success: true });
+    })
+    .catch((err) => {
+      const error = new Error(`Error while inserting into database: ${err}`);
+      res.status(500);
+      next(error);
+    });
 };
+
 // [GET] serve results from db
 exports.audits = async (req, res) => {
   const { storeId } = req.params;
@@ -105,11 +93,10 @@ exports.changeResult = async (req, res) => {
     .catch((err) => console.log(err));
 };
 
-async function buildDesktopView(results, auditsCollection, storeId) {
+async function buildDesktopView(results, storeId) {
   const categories = [];
   const totalScore = { available: 0, earned: 0, perc: 0 };
-  const unacceptedPoints = await getUnacceptedPoints(auditsCollection, storeId);
-  console.log({ unacceptedPoints });
+  const unacceptedPoints = await getUnacceptedPoints(storeId);
 
   Object.entries(results).forEach(([id, result]) => {
     const categoryId = Number(id.slice(1, 3));
@@ -153,71 +140,6 @@ function getCategoryRef(categories, categoryId) {
     };
   }
   return categories[categoryId - 1];
-}
-
-function auditExistForThisMonth(collection, storeId, date) {
-  date = new Date(date);
-  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-  return collection.find({ date: { $gte: firstDayOfMonth }, storeId }).count();
-}
-
-async function getUnacceptedPoints(collection, storeId) {
-  const [lastAudit] = await collection
-    .find({ storeId })
-    .sort({ date: -1 })
-    .toArray();
-  if (!lastAudit) {
-    return {};
-  }
-  const { _id } = lastAudit;
-  return collection
-    .aggregate([
-      { $match: { _id } },
-      { $unwind: '$categories' },
-      { $unwind: '$categories.categoryPoints' },
-      {
-        $group: {
-          _id: '$storeId',
-          unacceptedPoints: {
-            $push: {
-              $cond: [
-                { $eq: ['$categories.categoryPoints.accepted', false] },
-                {
-                  id: '$categories.categoryPoints.id',
-                  numOfRepetitions:
-                    '$categories.categoryPoints.unacceptedInARow',
-                },
-                '$$REMOVE',
-              ],
-            },
-          },
-        },
-      },
-      { $project: { _id: 0, unacceptedPoints: 1 } },
-    ])
-    .toArray()
-    .then(([{ unacceptedPoints }]) => {
-      return unacceptedPoints.reduce((obj, point) => {
-        obj[point.id] = point.numOfRepetitions;
-        return obj;
-      }, {});
-    });
-}
-
-async function getNumOfRepetitions(actualAuditDate, categoryPointId) {
-  const auditsCollection = getDb().collection('audits');
-  const categoryId = Number(categoryPointId.slice(1, 3));
-  const [previousAudit] = await auditsCollection
-    .find({ date: { $lt: actualAuditDate } })
-    .sort({ date: -1 })
-    .toArray();
-  const category = previousAudit.categories.find(
-    (category) => category.categoryId == categoryId
-  );
-  const categoryPoint = category.categoryPoints.find(
-    (categoryPoint) => categoryPoint.id === categoryPointId
-  );
-  return categoryPoint.unacceptedInARow;
 }
 
 function findCategoryAndPoint(audit, categoryPointId) {

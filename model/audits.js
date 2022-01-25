@@ -41,6 +41,72 @@ exports.saveAudit = (audit) =>
       return { success: false };
     });
 
+exports.thisMonthAlreadyDone = (storeId, date) => {
+  date = new Date(date);
+  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  return getDb()
+    .collection('audits')
+    .find({ date: { $gte: firstDayOfMonth }, storeId })
+    .count();
+};
+
+exports.getUnacceptedPoints = async (storeId) => {
+  const lastAudit = await this.getLastSavedAudit(storeId);
+  if (!lastAudit) {
+    return {};
+  }
+  return getDb()
+    .collection('audits')
+    .aggregate([
+      { $match: { _id: lastAudit._id } },
+      { $unwind: '$categories' },
+      { $unwind: '$categories.categoryPoints' },
+      {
+        $group: {
+          _id: '$storeId',
+          unacceptedPoints: {
+            $push: {
+              $cond: [
+                { $eq: ['$categories.categoryPoints.accepted', false] },
+                {
+                  id: '$categories.categoryPoints.id',
+                  numOfRepetitions:
+                    '$categories.categoryPoints.unacceptedInARow',
+                },
+                '$$REMOVE',
+              ],
+            },
+          },
+        },
+      },
+      { $project: { _id: 0, unacceptedPoints: 1 } },
+    ])
+    .map(({ unacceptedPoints }) =>
+      unacceptedPoints.reduce((obj, point) => {
+        obj[point.id] = point.numOfRepetitions;
+        return obj;
+      }, {})
+    )
+    .next();
+};
+
+exports.insertAuditResult = ({
+  auditor,
+  date,
+  storeId,
+  categories,
+  totalScore,
+}) =>
+  getDb()
+    .collection('audits')
+    .insertOne({
+      auditor,
+      date: new Date(date),
+      storeId,
+      categories,
+      totalScore,
+    });
+
 const getPreviousAudit = ({ date: currentAuditDate, storeId }) =>
   getDb()
     .collection('audits')
