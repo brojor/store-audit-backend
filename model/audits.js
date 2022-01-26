@@ -26,7 +26,7 @@ exports.getNumOfDeficienciesRepetitions = async (audit, categoryPointId) => {
     previousAudit,
     categoryPointId
   );
-
+  
   return unacceptedInARow;
 };
 

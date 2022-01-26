@@ -1,5 +1,3 @@
-const { getDb } = require('../db/index');
-const ObjectID = require('mongodb').ObjectID;
 const { insertEmptyIfMissing } = require('../utils/utils');
 const seed = require('../seed.json');
 const { getStoresByUser } = require('../model/stores');
@@ -21,10 +19,8 @@ exports.stores = async (req, res) => {
 
 // (POST) save results of audit from mobile app
 exports.results = async (req, res, next) => {
-  const auditsCollection = getDb().collection('audits');
   const { storeId, results, date } = req.body;
   const auditor = req.user._id;
-
   const alreadyExists = await thisMonthAlreadyDone(storeId, date);
 
   if (alreadyExists) {
@@ -54,9 +50,9 @@ exports.audits = async (req, res) => {
 
   res.json(wholeSemester);
 };
+
 // [POST] - resultCorrection from desktop view
 exports.changeResult = async (req, res) => {
-  // TODO - lze měnit jen audit náležící přihlášenému uživateli
   const { auditId } = req.params;
   const { categoryPointId } = req.body;
 
