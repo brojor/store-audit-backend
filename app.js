@@ -15,6 +15,7 @@ const {
   audits,
   changeResult,
 } = require('./controllers/audit');
+const { getCategoryNames } = require('./controllers/categoryNames');
 
 dotenv.config({ path: './config/.env' });
 
@@ -31,6 +32,7 @@ app.get('/stores', stores);
 app.post('/results', results);
 app.get('/audits/:storeId', audits);
 app.post('/audits/:auditId', changeResult);
+app.get('/category-names', getCategoryNames);
 
 app.use(errorHandler);
 
