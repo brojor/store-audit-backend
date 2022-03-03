@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "v14.17.5"
+    "node": "v14.17.6"
   },
   "scripts": {
     "start": "node index.js",
     "dev": "NODE_ENV=development node index.js",
-    "test": "NODE_ENV=test mocha './test/*.js' --watch --require './test/hooks.js'"
+    "test": "NODE_ENV=test mocha './test/**/*.js' --watch --require './test/hooks.js'"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "luxon": "^2.3.1",
     "mongo": "^0.1.0",
     "morgan": "^1.10.0"
   },

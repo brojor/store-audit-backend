@@ -1,10 +1,10 @@
 const { getDb } = require('../db/index');
 const { ObjectId } = require('mongodb');
 
-exports.getAuditResults = (storeId, { start, stop }) => {
+exports.getAuditResults = (storeId, { start, end }) => {
   const query = {
     storeId,
-    date: { $gte: new Date(start), $lte: new Date(stop) },
+    date: { $gte: new Date(start), $lt: new Date(end) },
   };
 
   return getDb().collection('audits').find(query).toArray();

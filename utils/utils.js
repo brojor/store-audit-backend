@@ -1,37 +1,18 @@
 const emtyResults = require('./emptyResults.json');
+const { Interval } = require('luxon');
 
-function getExpectedMonths({ start, stop }) {
-  const expectedMonths = [];
-  const date = new Date(start);
-  while (date <= new Date(stop)) {
-    expectedMonths.push({
-      year: date.getFullYear(),
-      month: date.getUTCMonth() + 1,
-    });
-    date.setUTCMonth(date.getUTCMonth() + 1);
-  }
-  return expectedMonths;
-}
+const createEmptyResults = (date) => ({
+  date: new Date(date),
+  categories: emtyResults,
+  totalScore: { perc: -1 },
+});
 
-exports.insertEmptyIfMissing = (data, dateRange) => {
-  const expectedMonths = getExpectedMonths(dateRange);
+exports.insertEmptyIfMissing = (audits, dateRange) => {
+  const { start, end } = dateRange;
+  const dateInterval = Interval.fromDateTimes(new Date(start), new Date(end));
 
-  return expectedMonths.map(({ month, year }) => {
-    const match = data.find(
-      (audit) =>
-        audit.date.getUTCMonth() +1 === month &&
-        audit.date.getFullYear() === year
-    );
-    if (match) {
-      return match;
-    } else {
-      return {
-        date: new Date(year, month -1),
-        categories: emtyResults,
-        totalScore: { perc: -1 },
-      };
-    }
+  return dateInterval.splitBy({ months: 1 }).map(({ start, end }) => {
+    const match = audits.find(({ date }) => date >= start && date < end);
+    return match || createEmptyResults(start);
   });
 };
-
-exports.getExpectedMonths = getExpectedMonths;
