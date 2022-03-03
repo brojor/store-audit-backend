@@ -16,19 +16,21 @@ exports.getNames = () =>
       {
         $project: {
           name: 1,
+          weight: 1,
           'categoryPoints.name': '$categoryPoints.label',
-          'categoryPoints.key': '$categoryPoints._id',
+          'categoryPoints.id': '$categoryPoints._id',
+          'categoryPoints.weight': 1,
         },
       },
       {
         $group: {
           _id: '$name',
           name: { $first: '$name' },
-          key: { $first: '$_id' },
+          id: { $first: '$_id' },
           categoryPoints: { $push: '$categoryPoints' },
         },
       },
-      { $sort: { key: 1 } },
+      { $sort: { id: 1 } },
       { $project: { _id: 0 } },
     ])
     .toArray();
