@@ -1,0 +1,46 @@
+[
+    {
+        "_id": 1,
+        "name": "Před prodejnou, vstup do prodejny"
+    },
+    {
+        "_id": 2,
+        "name": "V prodejně"
+    },
+    {
+        "_id": 3,
+        "name": "Sklad, zázemí, kancelář"
+    },
+    {
+        "_id": 4,
+        "name": "Layout, POS a MKT označení"
+    },
+    {
+        "_id": 5,
+        "name": "Prezentace"
+    },
+    {
+        "_id": 6,
+        "name": "Provoz"
+    },
+    {
+        "_id": 7,
+        "name": "Stav zásob, \"díry\""
+    },
+    {
+        "_id": 8,
+        "name": "Doplněnost"
+    },
+    {
+        "_id": 9,
+        "name": "Ceny, označení zboží"
+    },
+    {
+        "_id": 10,
+        "name": "Expirace"
+    },
+    {
+        "_id": 11,
+        "name": "Personál"
+    }
+]

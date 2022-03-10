@@ -1,0 +1,481 @@
+[{
+	"_id": "C01P01",
+	"label": "Výlohy jsou čisté",
+	"category": 1.0,
+	"weight": 15.0
+},
+{
+	"_id": "C01P02",
+	"label": "Ve výlohách jsou umístěny pouze informace a POS materiály dle instrukcí marketingu nebo vedení maloobchodu (případně vedení OC), na výloze není nic přilepené (mimo MKT samolepek příp. platností probíhajících akcí)",
+	"category": 1.0,
+	"weight": 8.0
+},
+{
+	"_id": "C01P03",
+	"label": "Vstup je průchodný, uklizený, rohož (čistící zóna) je uklizená, nepoškozená, nepokrčená",
+	"category": 1.0,
+	"weight": 8.0
+},
+{
+	"_id": "C01P04",
+	"label": "Ve výlohách na figurínách prezentujeme aktuální sestavy zboží dle instrukcí merchandisingera",
+	"category": 1.0,
+	"weight": 7.0
+},
+{
+	"_id": "C01P05",
+	"label": "Prostor ve výlohách je čistý, přehledný a upravený, příp. stojany jsou kompletně doplněné",
+	"category": 1.0,
+	"weight": 15.0
+},
+{
+	"_id": "C01P06",
+	"label": "Logo nad vstupem je čisté a svítí",
+	"category": 1.0,
+	"weight": 7.0
+},
+{
+	"_id": "C02P01",
+	"label": "Pokladny jsou čisté, uklizené, věci nepotřebné k práci jsou schované před zraky zákazníků pod pokladnami, kde je také čisto a věci jsou srovnané, na pokladně není žádné jídlo ani pití, na prodejním pultu nejsou žádné POS materiály, letáčky, magazíny, letáky (pokud není předepsáno centrálou), pokud je pokladna uzavřena, je označena informačním stojánkem, na pokladně jsou umístěny informační nálepky k EET a akceptací platebních karet, odpadkový koš je vynesený",
+	"category": 2.0,
+	"weight": 12.0
+},
+{
+	"_id": "C02P02",
+	"label": "Na pokladně je prezentována ZÓNA a aktuální akce (ve stojánku), stojánky jsou v reprezentativním stavu",
+	"category": 2.0,
+	"weight": 9.0
+},
+{
+	"_id": "C02P03",
+	"label": "Lightboxy a jiné osvětlené regály v provozní době svítí",
+	"category": 2.0,
+	"weight": 9.0
+},
+{
+	"_id": "C02P04",
+	"label": "Stojany, regály, police i poličky na prodejně jsou a čisté, bez prachu a nečistot. Jsou správně rozmístěné dle instrukcí VED.",
+	"category": 2.0,
+	"weight": 12.0
+},
+{
+	"_id": "C02P05",
+	"label": "Prodejní pult a zrcadla jsou čistá, vyleštěná",
+	"category": 2.0,
+	"weight": 9.0
+},
+{
+	"_id": "C02P06",
+	"label": "Kabinky jsou čisté a není v nich žádné zboží ani ramínka, pokud je u kabinky/v kabince umístěn klip rám je v něm aktuální plakát dle instrukcí MKT, stěny jsou čisté, nepolepené",
+	"category": 2.0,
+	"weight": 12.0
+},
+{
+	"_id": "C02P07",
+	"label": "Podlaha je čistá včetně prostoru pod stojany, stírá se mimo otevírací dobu (vyjma aktuálních nečistot)",
+	"category": 2.0,
+	"weight": 11.0
+},
+{
+	"_id": "C02P08",
+	"label": "Rádio a TV jsou zapnuté a nehrají nahlas (TV má aktuální videa)",
+	"category": 2.0,
+	"weight": 6.0
+},
+{
+	"_id": "C03P01",
+	"label": "Dveře do skladu/zázemí jsou vždy zavřené (pokud nejsou dveře, tak je zatažen závěs)",
+	"category": 3.0,
+	"weight": 7.0
+},
+{
+	"_id": "C03P02",
+	"label": "Ve skladu i v kanceláři je uklizeno, čisto a pořádek",
+	"category": 3.0,
+	"weight": 12.0
+},
+{
+	"_id": "C03P03",
+	"label": "Zboží je roztříděno sortimentně pokud možno v regálech, není poškozováno špatným skladováním",
+	"category": 3.0,
+	"weight": 12.0
+},
+{
+	"_id": "C03P04",
+	"label": "Pokud je uvedena expirace, uloženo dle FEFO (první expiruje, první ven)",
+	"category": 3.0,
+	"weight": 13.0
+},
+{
+	"_id": "C03P05",
+	"label": "Odpad je likvidován, kartony jsou rozložené a poskládané, v kanceláři/v zázemí/ve skladu nejsou staré nepotřebné věci, odpadkové koše jsou vynesené",
+	"category": 3.0,
+	"weight": 6.0
+},
+{
+	"_id": "C03P06",
+	"label": "Prošlé zboží, zboží na vratku, II. jakost, zboží pro e-shop a zboží na reklamaci je na odděleném místě, a připraveno k odvozu (sortimentně roztříděno)",
+	"category": 3.0,
+	"weight": 8.0
+},
+{
+	"_id": "C03P07",
+	"label": "Zboží aktuálně rezervované zákazníkem přes e-shop na prodejně je připravené, řádně zabalené a označené (jméno, cena, do kdy atd.), na odděleném místě (maximálně 48 hodin nebo dle dohody se zákazníkem)",
+	"category": 3.0,
+	"weight": 10.0
+},
+{
+	"_id": "C03P08",
+	"label": "Rezervace zákazníků (telefon, e-mail, osobně) jsou řádně označené jménem, do kdy atd., nejsou uložené žádné neaktuální",
+	"category": 3.0,
+	"weight": 11.0
+},
+{
+	"_id": "C03P09",
+	"label": "Nástěnka a aktuální instrukce personálu jsou jasné a přehledné",
+	"category": 3.0,
+	"weight": 7.0
+},
+{
+	"_id": "C03P10",
+	"label": "Zázemí (šatny, WC, kuchyňka, chodbičky), sklad i kancelář jsou čisté a uklizené - žádné rozjedené jídlo bez \"strávníka\", umyté nádobí, mikrovlnná trouba i lednice jsou čisté i zevnitř (bez nepoživatelných potravin), na stolech je čisto, bez zboží, lékárnička je aktuálně zásobená.",
+	"category": 3.0,
+	"weight": 14.0
+},
+{
+	"_id": "C04P01",
+	"label": "Je přesně dodržen layout prodejny",
+	"category": 4.0,
+	"weight": 10.0
+},
+{
+	"_id": "C04P02",
+	"label": "Na prodejně nejsou žádné nepovolené stojany atd.",
+	"category": 4.0,
+	"weight": 10.0
+},
+{
+	"_id": "C04P03",
+	"label": "Na prodejně není žádná komunikace prodejny směrem k zákazníkovi kromě komunikace schválené MKT nebo VED - žádné ručně psané ani tištěné nápisy, žádné nepovolené POS materiály externích dodavatelů",
+	"category": 4.0,
+	"weight": 10.0
+},
+{
+	"_id": "C04P04",
+	"label": "Ve vnitřních plakátovacích modulech a light-boxech jsou aktuální materiály apod.",
+	"category": 4.0,
+	"weight": 10.0
+},
+{
+	"_id": "C04P05",
+	"label": "Jsou používány jen aktuální materiály schválené MKT",
+	"category": 4.0,
+	"weight": 10.0
+},
+{
+	"_id": "C05P01",
+	"label": "Zboží je vyrovnané (pokud možno přední stranou k zákazníkovi), čisté, zabezpečené, vyndané z obalu, upravené dle standardů (tzn. zapnuté zipy, tkaničky zavázané/schované, porovnané kapuce atd.)",
+	"category": 5.0,
+	"weight": 11.0
+},
+{
+	"_id": "C05P02",
+	"label": "Je dodrženo vystavení akce",
+	"category": 5.0,
+	"weight": 11.0
+},
+{
+	"_id": "C05P03",
+	"label": "Zboží na prodejně je rozmístěno dle aktuální sezóny, příp. dle MKT",
+	"category": 5.0,
+	"weight": 11.0
+},
+{
+	"_id": "C05P04",
+	"label": "V boxech/koších je prezentován max. 1 druh zboží (čepice, rukavice apod.)",
+	"category": 5.0,
+	"weight": 7.0
+},
+{
+	"_id": "C05P05",
+	"label": "Prezentace zboží/výprodejů je tématická, sortimentně roztříděná",
+	"category": 5.0,
+	"weight": 9.0
+},
+{
+	"_id": "C05P06",
+	"label": "Při prezentaci je dodržené rozdělení pánské, dámské a dětské kolekce se seskupením podobných stylů k sobě (příp. dodržení koncepce SiSů)",
+	"category": 5.0,
+	"weight": 12.0
+},
+{
+	"_id": "C05P07",
+	"label": "Pokud jsou na prodejně využívána ramínka s brandingem, jsou použity jen na danou značku bez jiných typů",
+	"category": 5.0,
+	"weight": 9.0
+},
+{
+	"_id": "C06P01",
+	"label": "Na prodejně jsou založené jen aktuální směrnice",
+	"category": 6.0,
+	"weight": 9.0
+},
+{
+	"_id": "C06P02",
+	"label": "Aktuální směrnice jsou podepsané všemi zaměstnanci (vybranné směrnice i brigádníky)",
+	"category": 6.0,
+	"weight": 10.0
+},
+{
+	"_id": "C06P03",
+	"label": "Směrnice zápůjčky - tabulka zápůjček je aktuální a doplňovaná",
+	"category": 6.0,
+	"weight": 12.0
+},
+{
+	"_id": "C06P04",
+	"label": "Prodejna má zapsané průchody, denní tržby a počty účtenek do tabulky na S:/ (max. 7 dnů starý zápis v den kontroly)",
+	"category": 6.0,
+	"weight": 8.0
+},
+{
+	"_id": "C06P05",
+	"label": "Všechny světla na prodejně i ve skladu svítí - vyměněné všechny prasklé žárovky/zářivky",
+	"category": 6.0,
+	"weight": 10.0
+},
+{
+	"_id": "C06P06",
+	"label": "U nefunkčních světel došlo k nahlášení závady (kdy a komu)",
+	"category": 6.0,
+	"weight": 8.0
+},
+{
+	"_id": "C06P07",
+	"label": "Na pokladnách nejsou nepřiměřeně velké zůstatky a jsou průběžně odváděny do trezoru",
+	"category": 6.0,
+	"weight": 12.0
+},
+{
+	"_id": "C06P08",
+	"label": "Každodenní odvody hotovosti do banky",
+	"category": 6.0,
+	"weight": 12.0
+},
+{
+	"_id": "C06P09",
+	"label": "Na prodejně jsou na uzamčeném místě uložené kopie smluv a dohod jen aktuálních zaměstnanců",
+	"category": 6.0,
+	"weight": 8.0
+},
+{
+	"_id": "C06P10",
+	"label": "Na prodejně jsou evidované všechny klíče (příp. i čipy) od prodejny a od trezoru ve formě předávacích protokolů",
+	"category": 6.0,
+	"weight": 11.0
+},
+{
+	"_id": "C07P01",
+	"label": "Prodejna (případně pověřená osoba) provádí denně kontrolu a doplnění odprodaných artiklů",
+	"category": 7.0,
+	"weight": 10.0
+},
+{
+	"_id": "C07P02",
+	"label": "Pokud na prodejně nějaké zboží chybí, zná personál důvod",
+	"category": 7.0,
+	"weight": 9.0
+},
+{
+	"_id": "C07P03",
+	"label": "Objednávky chybějícího zboží provádí pověřená osoba průběžně",
+	"category": 7.0,
+	"weight": 7.0
+},
+{
+	"_id": "C07P04",
+	"label": "Průběžná kontrola doplňování (automatu) dle odprodaného zboží",
+	"category": 7.0,
+	"weight": 13.0
+},
+{
+	"_id": "C07P05",
+	"label": "Prodejna pravidelně provádí kontrolu stavu zásob i na ostatních artiklech, ne jen na artiklech chybějících na prodejně",
+	"category": 7.0,
+	"weight": 7.0
+},
+{
+	"_id": "C07P06",
+	"label": "Pokud u zboží nesouhlasí účetní stav s fyzickým, vedoucí (příp. jiná kompetentní osoba) má provedenou kontrolu a řeší okamžitě bez zbytečného odkladu – důležité vzhledem k aktuální skladové zásobě vůči e-shopu",
+	"category": 7.0,
+	"weight": 14.0
+},
+{
+	"_id": "C08P01",
+	"label": "Zboží je doplňováno s ohledem na zákazníka - na prodejní plochu nesmí být zavezena paleta, na prodejně neleží žádné krabice, doplňovací vozík či štendr není ponechán prázdný ani bez dozoru na prodejně",
+	"category": 8.0,
+	"weight": 10.0
+},
+{
+	"_id": "C08P02",
+	"label": "Na prodejně je dostatek zboží, plné regály, plné stojany = zboží není ve skladu",
+	"category": 8.0,
+	"weight": 9.0
+},
+{
+	"_id": "C08P03",
+	"label": "Akční zboží je v dostatečném množství na prodejně = zboží není ve skladu",
+	"category": 8.0,
+	"weight": 9.0
+},
+{
+	"_id": "C08P04",
+	"label": "Prodejna má zajištěné dostatečné množství akčního zboží, v případě marketingové podpory dodavatele je průběžně kontrolován a redukován stav zásob",
+	"category": 8.0,
+	"weight": 10.0
+},
+{
+	"_id": "C08P05",
+	"label": "Na prodejní ploše nejsou žádné prázdné háčky, \"vodopády\", tyče atd.",
+	"category": 8.0,
+	"weight": 12.0
+},
+{
+	"_id": "C09P01",
+	"label": "Veškeré zboží je označeno cenou a ceny jsou správné",
+	"category": 9.0,
+	"weight": 10.0
+},
+{
+	"_id": "C09P02",
+	"label": "Cenovky jsou tištěné z portálu SAP (žádné rukou psané či škrtané, tištěné etiketovacími kleštěmi apod.), je dodržen správný druh štítků",
+	"category": 9.0,
+	"weight": 11.0
+},
+{
+	"_id": "C09P03",
+	"label": "Zboží je označeno pouze jednou cenovkou",
+	"category": 9.0,
+	"weight": 12.0
+},
+{
+	"_id": "C09P04",
+	"label": "Výprodejové zboží nebo nová kolekce je označena aktuální visačkou na ramínku",
+	"category": 9.0,
+	"weight": 7.0
+},
+{
+	"_id": "C09P05",
+	"label": "Ve výloze a v čelních pozicích na prodejně jsou schované produktové visačky se správnou cenou",
+	"category": 9.0,
+	"weight": 7.0
+},
+{
+	"_id": "C09P06",
+	"label": "Přecenění zboží je provedeno do 24 hodin od přijetí pokynu k přecenění (email o přecenění) bez zbytečného odkladu",
+	"category": 9.0,
+	"weight": 7.0
+},
+{
+	"_id": "C09P07",
+	"label": "V průběhu každé akce prezentované ve výlohách je aktuální informace o době trvání umístěna alespoň v 1 výloze",
+	"category": 9.0,
+	"weight": 10.0
+},
+{
+	"_id": "C09P08",
+	"label": "Na zboží bez českých popisků materiálového složení je štítek s překladem aktuálně používaných materiálů (musí být pevně spojeno se zbožím)",
+	"category": 9.0,
+	"weight": 13.0
+},
+{
+	"_id": "C09P09",
+	"label": "Zboží je opatřeno českými návody jak používat atd. (týká se zboží, které ze své podstaty návod vyžadují)",
+	"category": 9.0,
+	"weight": 13.0
+},
+{
+	"_id": "C10P01",
+	"label": "Na prodejně není proexpirované zboží",
+	"category": 10.0,
+	"weight": 11.0
+},
+{
+	"_id": "C10P02",
+	"label": "Pokud je uvedena expirace, zboží je doplňováno a uloženo dle FEFO (první expiruje, první ven)",
+	"category": 10.0,
+	"weight": 10.0
+},
+{
+	"_id": "C10P03",
+	"label": "Personál prodejny pravidelně kontroluje expiraci a vede evidenci expirace",
+	"category": 10.0,
+	"weight": 9.0
+},
+{
+	"_id": "C11P01",
+	"label": "Je oblečen a upraven dle pravidel",
+	"category": 11.0,
+	"weight": 12.0
+},
+{
+	"_id": "C11P02",
+	"label": "Oslovuje zákazníky, aktivně prodává, dodržuje standard obsluhy zákazníků (pravidla chování k zákazníkovi)",
+	"category": 11.0,
+	"weight": 10.0
+},
+{
+	"_id": "C11P03",
+	"label": "Umí založit ZÓNA kartu, zná všechny výhody klubu",
+	"category": 11.0,
+	"weight": 10.0
+},
+{
+	"_id": "C11P04",
+	"label": "Aktivně nabízí doplňkový sortiment",
+	"category": 11.0,
+	"weight": 9.0
+},
+{
+	"_id": "C11P05",
+	"label": "Aktivně nabízí akční zboží",
+	"category": 11.0,
+	"weight": 10.0
+},
+{
+	"_id": "C11P06",
+	"label": "Zvládá řešit vzniklé situace (např. vyřízení reklamace - správnou komunikaci se zákazníkem, sepsání protokolu, výměnu zboží, apod.)",
+	"category": 11.0,
+	"weight": 10.0
+},
+{
+	"_id": "C11P07",
+	"label": "Plní všechny činnosti dle popisu pracovních pozic a pracovního řádu",
+	"category": 11.0,
+	"weight": 10.0
+},
+{
+	"_id": "C11P08",
+	"label": "Vykonává všechny činnosti z náplně práce - kromě výše zmíněného prodeje i doplňování zboží, kontrolu cen, péči o zboží a prodejnu, předává zpětnou vazbu nadřízenému, plní zadané úkoly a pokyny",
+	"category": 11.0,
+	"weight": 10.0
+},
+{
+	"_id": "C11P09",
+	"label": "Nabízí ZÓNA kartu, aktuální akční nabídky, prodej poukázek, přijímá platby poukázkami, ptá se zákazníka zda je potřeba taška k nákupu - pokud ano, vkládá zakoupené zboží s účtenkou zákazníkovi do tašky, loučí se a zve na další návštěvu, nezapomíná na oční kontakt",
+	"category": 11.0,
+	"weight": 10.0
+},
+{
+	"_id": "C11P10",
+	"label": "Dodržuje bezpečnostní opatření na pokladnách, na vyžádání dokáže provést kontrolu pokladní hotovosti a stavu trezoru",
+	"category": 11.0,
+	"weight": 10.0
+},
+{
+	"_id": "C11P11",
+	"label": "Ke každému prodeji zboží dává automaticky informace o údržbě zboží (v podobě kartičky \"Symboly pro ošetřování výrobků\")",
+	"category": 11.0,
+	"weight": 9.0
+}]
+
