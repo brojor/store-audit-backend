@@ -9,7 +9,7 @@ exports.getUserById = (id) =>
 exports.getUserByUsername = (username) =>
   getDb()
     .collection('users')
-    .findOne({ username }, { projection: { password: 0 } });
+    .findOne({ username });
 
 exports.getListOfRegionalManagers = () =>
   getDb()
