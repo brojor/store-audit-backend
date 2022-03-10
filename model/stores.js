@@ -19,6 +19,13 @@ exports.getStoresByUser = ({ _id: userId, role }, cbName = 'idOnly') =>
     .map(callbacks[cbName])
     .toArray();
 
+exports.getStoresBelongsManager = ({ role, _id }) =>
+  getDb()
+    .collection('stores')
+    .find({ [role]: _id })
+    // .map((store) => store.storeId)
+    .toArray();
+
 exports.getStoresInRegion = () =>
   getDb()
     .collection('users')

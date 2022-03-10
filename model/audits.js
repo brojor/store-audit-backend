@@ -26,7 +26,7 @@ exports.getNumOfDeficienciesRepetitions = async (audit, categoryPointId) => {
     previousAudit,
     categoryPointId
   );
-  
+
   return unacceptedInARow;
 };
 
@@ -90,22 +90,8 @@ exports.getUnacceptedPoints = async (storeId) => {
     .next();
 };
 
-exports.insertAuditResult = ({
-  auditor,
-  date,
-  storeId,
-  categories,
-  totalScore,
-}) =>
-  getDb()
-    .collection('audits')
-    .insertOne({
-      auditor,
-      date: new Date(date),
-      storeId,
-      categories,
-      totalScore,
-    });
+exports.insertAudit = (audit) =>
+  getDb().collection('audits').insertOne(audit);
 
 const getPreviousAudit = ({ date: currentAuditDate, storeId }) =>
   getDb()

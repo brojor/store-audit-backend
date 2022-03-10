@@ -8,9 +8,10 @@ const {
   getNumOfDeficienciesRepetitions,
   saveAudit,
   thisMonthAlreadyDone,
-  getUnacceptedPoints,
-  insertAuditResult,
+  insertAudit,
 } = require('../model/audits');
+const { createAudit } = require('../audit');
+const { getWeights } = require('../model/points');
 
 exports.stores = async (req, res) => {
   const stores = await getStoresByUser(req.user, 'nameAndId');
@@ -19,7 +20,8 @@ exports.stores = async (req, res) => {
 
 // (POST) save results of audit from mobile app
 exports.results = async (req, res, next) => {
-  const { storeId, results, date } = req.body;
+  const { storeId, results } = req.body;
+  const date = new Date(req.body.date);
   const auditor = req.user._id;
   const alreadyExists = await thisMonthAlreadyDone(storeId, date);
 
@@ -29,8 +31,10 @@ exports.results = async (req, res, next) => {
       message: 'V této prodejně byl již tento měsíc audit proveden.',
     });
   }
-  const { categories, totalScore } = await buildDesktopView(results, storeId);
-  insertAuditResult({ auditor, date, storeId, categories, totalScore })
+  const weights = await getWeights();
+  const audit = await createAudit({ weights, storeId, results, auditor, date });
+
+  insertAudit(audit)
     .then(() => {
       res.json({ success: true });
     })
@@ -89,53 +93,9 @@ exports.changeResult = async (req, res) => {
     .catch((err) => console.log(err));
 };
 
-async function buildDesktopView(results, storeId) {
-  const categories = [];
-  const totalScore = { available: 0, earned: 0, perc: 0 };
-  const unacceptedPoints = await getUnacceptedPoints(storeId);
-
-  Object.entries(results).forEach(([id, result]) => {
-    const categoryId = Number(id.slice(1, 3));
-    const categoryPointId = Number(id.slice(4));
-    const { accepted, comment } = result;
-    const currentCategory = getCategoryRef(categories, categoryId);
-    const numOfPoints = seed.weights[id];
-
-    addScore(currentCategory.score, accepted, numOfPoints);
-    addScore(totalScore, accepted, numOfPoints);
-
-    const unacceptedInARow = !accepted ? unacceptedPoints[id] + 1 || 1 : null;
-
-    currentCategory.categoryPoints[categoryPointId - 1] = {
-      id,
-      accepted,
-      ...(comment ? { comment } : {}),
-      ...(unacceptedInARow ? { unacceptedInARow } : {}),
-    };
-  });
-  return { categories, totalScore };
-}
-
-function addScore(target, accepted, numOfPoints) {
-  target.available += numOfPoints;
-  target.earned += accepted ? numOfPoints : 0;
-  target.perc = (100 * target.earned) / target.available;
-}
-
 function changeScore(accepted, target, numOfPoints) {
   accepted ? (target.earned += numOfPoints) : (target.earned -= numOfPoints);
   target.perc = (100 * target.earned) / target.available;
-}
-
-function getCategoryRef(categories, categoryId) {
-  if (!categories[categoryId - 1]) {
-    categories[categoryId - 1] = {
-      categoryId,
-      categoryPoints: [],
-      score: { available: 0, earned: 0 },
-    };
-  }
-  return categories[categoryId - 1];
 }
 
 function findCategoryAndPoint(audit, categoryPointId) {
@@ -148,5 +108,3 @@ function findCategoryAndPoint(audit, categoryPointId) {
   );
   return { category, categoryPoint };
 }
-
-exports.buildDesktopView = buildDesktopView;
