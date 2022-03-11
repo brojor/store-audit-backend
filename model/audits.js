@@ -20,8 +20,13 @@ exports.getAuditById = (id) =>
 exports.getLastSavedAudit = (storeId) =>
   getDb().collection('audits').find({ storeId }).sort({ date: -1 }).next();
 
-exports.getNumOfDeficienciesRepetitions = async (audit, categoryPointId) => {
-  const previousAudit = await getPreviousAudit(audit);
+exports.getNumOfRepetitions = async ({
+  date,
+  storeId,
+  categoryPointId,
+}) => {
+  // console.log("getNumOfDeficienciesRepetitions: ",{categoryPointId})
+  const previousAudit = await getPreviousAudit({ date, storeId });
   const { unacceptedInARow } = findCategoryPoint(
     previousAudit,
     categoryPointId
@@ -90,8 +95,7 @@ exports.getUnacceptedPoints = async (storeId) => {
     .next();
 };
 
-exports.insertAudit = (audit) =>
-  getDb().collection('audits').insertOne(audit);
+exports.insertAudit = (audit) => getDb().collection('audits').insertOne(audit);
 
 const getPreviousAudit = ({ date: currentAuditDate, storeId }) =>
   getDb()

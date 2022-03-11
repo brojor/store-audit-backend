@@ -5,13 +5,13 @@ const {
   getAuditResults,
   getAuditById,
   getLastSavedAudit,
-  getNumOfDeficienciesRepetitions,
   saveAudit,
   thisMonthAlreadyDone,
   insertAudit,
+  getUnacceptedPoints,
 } = require('../model/audits');
-const { createAudit } = require('../audit');
 const { getWeights } = require('../model/points');
+const { Audit, CategoryPoint } = require('../audit');
 
 exports.stores = async (req, res) => {
   const stores = await getStoresByUser(req.user, 'nameAndId');
@@ -60,57 +60,41 @@ exports.changeResult = async (req, res) => {
   const { auditId } = req.params;
   const { categoryPointId } = req.body;
 
-  const editedAudit = await getAuditById(auditId);
-  const lastAuditInDb = await getLastSavedAudit(editedAudit.storeId);
+  const auditData = await getAuditById(auditId);
+  const audit = new Audit(auditData);
+
   // only the last audit can be changed
-  if (lastAuditInDb._id.toString() !== editedAudit._id.toString()) {
+  const isLast = await isLastSavedAudit(audit);
+  if (!isLast) {
     return res.json({ success: false });
   }
 
-  const { category, categoryPoint } = findCategoryAndPoint(
-    editedAudit,
-    categoryPointId
-  );
-  const previousNumOfRepetitions = await getNumOfDeficienciesRepetitions(
-    editedAudit,
-    categoryPointId
-  );
+  await audit.toggleResult(categoryPointId);
 
-  categoryPoint.accepted = !categoryPoint.accepted;
-
-  if (categoryPoint.accepted) {
-    delete categoryPoint.unacceptedInARow;
-  } else {
-    categoryPoint.unacceptedInARow = previousNumOfRepetitions + 1 || 1;
-  }
-
-  const weights = await getWeights();
-  console.log(weights[categoryPointId]);
-
-  changeScore(categoryPoint.accepted, category.score, weights[categoryPointId]);
-  changeScore(
-    categoryPoint.accepted,
-    editedAudit.totalScore,
-    weights[categoryPointId]
-  );
-
-  saveAudit(editedAudit)
+  saveAudit(audit)
     .then((result) => res.json(result))
     .catch((err) => console.log(err));
 };
 
-function changeScore(accepted, target, numOfPoints) {
-  accepted ? (target.earned += numOfPoints) : (target.earned -= numOfPoints);
-  target.perc = (100 * target.earned) / target.available;
+async function createAudit({ weights, storeId, results, auditor, date }) {
+  const lastNotAcceptedPoints = await getUnacceptedPoints(storeId);
+  const audit = new Audit({ auditor, date, storeId });
+
+  Object.entries(results).forEach(([id, { accepted, comment }]) => {
+    audit.addCategoryPoint(
+      new CategoryPoint({
+        id,
+        accepted,
+        comment,
+        lastNotAcceptedPoints,
+        weight: weights[id],
+      })
+    );
+  });
+  return audit;
 }
 
-function findCategoryAndPoint(audit, categoryPointId) {
-  const categoryId = Number(categoryPointId.slice(1, 3));
-  const category = audit.categories.find(
-    (category) => category.categoryId === categoryId
-  );
-  const categoryPoint = category.categoryPoints.find(
-    (catPoint) => catPoint.id === categoryPointId
-  );
-  return { category, categoryPoint };
+async function isLastSavedAudit(audit) {
+  const lastAuditInDb = await getLastSavedAudit(audit.storeId);
+  return lastAuditInDb._id.toString() === audit._id.toString();
 }

@@ -1,62 +1,82 @@
-const { getUnacceptedPoints } = require('../model/audits');
-
-exports.createAudit = async ({ weights, storeId, results, auditor, date }) => {
-  const lastNotAcceptedPoints = await getUnacceptedPoints(storeId);
-
-  const audit = new Audit(auditor, date, storeId);
-
-  Object.entries(results).forEach(([id, { accepted, comment }]) => {
-    audit.addCategoryPoint(
-      new CategoryPoint({
-        id,
-        accepted,
-        comment,
-        lastNotAcceptedPoints,
-        weight: weights[id],
-      })
-    );
-  });
-  return audit;
-};
+const { getNumOfRepetitions } = require('../model/audits');
+const { ObjectId } = require('mongodb');
+const { getWeights } = require('../model/points');
 
 class Audit {
-  constructor(auditor, date, storeId) {
+  constructor({
+    _id = ObjectId(),
+    auditor,
+    date = new Date(),
+    storeId,
+    totalScore = { available: 0, earned: 0, perc: 0 },
+    categories = [],
+  }) {
+    this._id = _id;
     this.auditor = auditor;
     this.date = date;
     this.storeId = storeId;
-    this.categories = [];
-    this.totalScore = new Score();
+    this.totalScore = new Score(totalScore);
+    this.categories = categories.map((category) => new Category(category));
+  }
+
+  async toggleResult(categoryPointId) {
+    const category = this.getCategoryById(categoryPointId);
+    const categoryPoint = category.getCategoryPoint(categoryPointId);
+    const weights = await getWeights();
+
+    categoryPoint.accepted = !categoryPoint.accepted;
+
+    if (categoryPoint.accepted) {
+      category.score.addPoints(weights[categoryPointId]);
+      this.totalScore.addPoints(weights[categoryPointId]);
+      delete categoryPoint.unacceptedInARow;
+      return;
+    }
+    category.score.substractPoints(weights[categoryPointId]);
+    this.totalScore.substractPoints(weights[categoryPointId]);
+    const previousNumOfRepetitions = await getNumOfRepetitions({
+      date: this.date,
+      storeId: this.storeId,
+      categoryPointId,
+    });
+    categoryPoint.unacceptedInARow = previousNumOfRepetitions + 1 || 1;
   }
 
   addCategoryPoint(categoryPoint) {
-    const category = this.getCategory(categoryPoint);
+    const category = this.getCategoryById(categoryPoint.id);
     category.addPoint(categoryPoint);
-    this.totalScore.changeScore(categoryPoint);
+    this.totalScore.addCategoryPoint(categoryPoint);
   }
 
-  getCategory(categoryPoint) {
-    const categoryId = this.getCategoryId(categoryPoint);
+  getCategoryById(categoryPointId) {
+    const categoryId = this.getCategoryId(categoryPointId);
     let category = this.categories.find(
       (category) => category.categoryId === categoryId
     );
     if (!category) {
-      category = new Category(categoryId);
+      category = new Category({ categoryId });
       this.categories.push(category);
     }
 
     return category;
   }
-  getCategoryId(categoryPoint) {
-    return Number(categoryPoint.id.slice(1, 3));
+
+  getCategoryId(categoryPointId) {
+    return Number(categoryPointId.slice(1, 3));
   }
 }
 
 class Category {
-  constructor(categoryId) {
+  constructor({
+    categoryId,
+    categoryPoints = [],
+    score = { available: 0, earned: 0, perc: 0 },
+  }) {
     this.categoryId = categoryId;
-    this.categoryPoints = [];
-    this.score = new Score();
+    this.score = new Score(score);
+    this.categoryPoints = categoryPoints;
   }
+
   addPoint(categoryPoint) {
     const { id, accepted, comment, unacceptedInARow } = categoryPoint;
     this.categoryPoints.push({
@@ -65,7 +85,11 @@ class Category {
       ...(comment ? { comment } : {}),
       ...(unacceptedInARow ? { unacceptedInARow } : {}),
     });
-    this.score.changeScore(categoryPoint);
+    this.score.addCategoryPoint(categoryPoint);
+  }
+
+  getCategoryPoint(id) {
+    return this.categoryPoints.find((categoryPoint) => categoryPoint.id === id);
   }
 }
 
@@ -87,17 +111,34 @@ class CategoryPoint {
 }
 
 class Score {
-  constructor() {
-    this.available = 0;
-    this.earned = 0;
-    this.perc = 0;
+  constructor({ available = 0, earned = 0, perc = 0 }) {
+    this.available = available;
+    this.earned = earned;
+    this.perc = perc;
   }
 
-  changeScore({ weight, accepted }) {
+  addCategoryPoint({ weight, accepted }) {
     if (accepted) {
       this.earned += weight;
     }
     this.available += weight;
+    this.calcPerc();
+  }
+
+  calcPerc() {
     this.perc = (100 * this.earned) / this.available;
   }
+
+  addPoints(weight) {
+    this.earned += weight;
+    this.calcPerc();
+  }
+
+  substractPoints(weight) {
+    this.earned -= weight;
+    this.calcPerc();
+  }
 }
+
+exports.Audit = Audit;
+exports.CategoryPoint = CategoryPoint;
