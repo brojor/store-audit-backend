@@ -15,6 +15,9 @@ module.exports = async function createUser(role) {
   const email = createEmail(firstName, lastName, company);
   const username = createUsername(firstName, lastName);
   const password = await createPassword('heslo');
+  if (role === 'topManagement') {
+    console.log(`Username of the top management member is: ${username}`);
+  }
   return {
     username,
     firstName,

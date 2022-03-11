@@ -11,7 +11,6 @@ const { getStoresBelongsManager } = require('../model/stores');
 const categories = require('./categories.json');
 const points = require('./points.json');
 
-// const { createAudit } = require('../audit');
 const { createStore } = require('./faker/store');
 const { Audit, CategoryPoint } = require('../audit');
 const { getUnacceptedPoints } = require('../model/audits');
@@ -30,12 +29,13 @@ initDb(async (err) => {
   await seedStores();
   await seedCategories();
   await seedCategoryPoints();
-  await seedAudits(12);
+  await seedAudits(36);
   console.log('Database populated successfully');
   process.exit();
 });
 
 async function seedUsers() {
+  console.log('Seeding users...');
   return Promise.all(
     roles
       .map((role) =>
@@ -49,6 +49,7 @@ async function seedUsers() {
 }
 
 async function seedStores() {
+  console.log('Seeding stores...');
   const storeManagers = await getStoreManagers();
   return Promise.all(
     storeManagers.map(async (storeManager) => {
@@ -60,14 +61,17 @@ async function seedStores() {
 }
 
 async function seedCategories() {
+  console.log('Seeding categories...');
   return getDb().collection('categories').insertMany(categories);
 }
 
 async function seedCategoryPoints() {
+  console.log('Seeding category points...');
   return getDb().collection('points').insertMany(points);
 }
 
 async function seedAudits(count, type = 'new') {
+  console.log('Seeding audits...');
   if (type === 'new') {
     const regionalManagers = await getListOfRegionalManagers();
     const categoryPointsIds = await getListOfPointsIds();
@@ -86,7 +90,6 @@ async function seedAudits(count, type = 'new') {
             auditor: regionalManager._id,
             date,
           });
-          console.log({ audit });
           await getDb().collection('audits').insertOne(audit);
         }
       }
