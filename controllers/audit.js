@@ -1,5 +1,5 @@
 const { insertEmptyIfMissing } = require('../utils/utils');
-const seed = require('../seed.json');
+// const seed = require('../seed.json');
 const { getStoresByUser } = require('../model/stores');
 const {
   getAuditResults,
@@ -84,9 +84,15 @@ exports.changeResult = async (req, res) => {
     categoryPoint.unacceptedInARow = previousNumOfRepetitions + 1 || 1;
   }
 
-  const weight = seed.weights[categoryPointId];
-  changeScore(categoryPoint.accepted, category.score, weight);
-  changeScore(categoryPoint.accepted, editedAudit.totalScore, weight);
+  const weights = await getWeights();
+  console.log(weights[categoryPointId]);
+
+  changeScore(categoryPoint.accepted, category.score, weights[categoryPointId]);
+  changeScore(
+    categoryPoint.accepted,
+    editedAudit.totalScore,
+    weights[categoryPointId]
+  );
 
   saveAudit(editedAudit)
     .then((result) => res.json(result))
