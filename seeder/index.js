@@ -11,8 +11,10 @@ const { getStoresBelongsManager } = require('../model/stores');
 const categories = require('./categories.json');
 const points = require('./points.json');
 
-const { createAudit } = require('./audit');
+// const { createAudit } = require('../audit');
 const { createStore } = require('./faker/store');
+const { Audit, CategoryPoint } = require('../audit');
+const { getUnacceptedPoints } = require('../model/audits');
 
 const roles = [
   { name: 'topManagement', count: 1 },
@@ -79,11 +81,12 @@ async function seedAudits(count, type = 'new') {
           const results = fakeResults(categoryPointsIds);
           const audit = await createAudit({
             weights,
-            store,
+            storeId: store.storeId,
             results,
             auditor: regionalManager._id,
             date,
           });
+          console.log({ audit });
           await getDb().collection('audits').insertOne(audit);
         }
       }
@@ -114,4 +117,22 @@ function generateDates(count) {
     today.setMonth(today.getMonth() - 1);
   }
   return arr.reverse();
+}
+
+async function createAudit({ weights, storeId, results, auditor, date }) {
+  const lastNotAcceptedPoints = await getUnacceptedPoints(storeId);
+  const audit = new Audit({ auditor, date, storeId });
+
+  Object.entries(results).forEach(([id, { accepted, comment }]) => {
+    audit.addCategoryPoint(
+      new CategoryPoint({
+        id,
+        accepted,
+        comment,
+        lastNotAcceptedPoints,
+        weight: weights[id],
+      })
+    );
+  });
+  return audit;
 }
