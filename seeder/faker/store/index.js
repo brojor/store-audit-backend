@@ -5,8 +5,6 @@ const {
   createStoreAddress,
 } = require('./utils');
 
-const company = 'supercompany';
-
 exports.createStore = function createStore(storeManager, regionalManager) {
   const storeId = `R${getRandomInt(1000, 9999)}`;
   const city = getCity();

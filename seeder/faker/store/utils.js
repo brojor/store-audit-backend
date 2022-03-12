@@ -1,7 +1,7 @@
 const cityNames = require('./cityNames.json');
 const streetNames = require('./streetNames.json');
 
-const company = 'SuperCompany';
+const brands = ['MyCompany', 'SuperBrand', 'FakeName'];
 
 const getRandomInt = (min, max) =>
   Math.floor(Math.random() * (max - min + 1) + min);
@@ -25,7 +25,8 @@ const getZipCode = () => {
 };
 
 const createStoreName = (city) => {
-  return `${company} ${city}`;
+  const brand = brands[Math.floor(Math.random() * brands.length)];
+  return `${brand} ${city}`;
 };
 
 const createStoreAddress = (city) => {

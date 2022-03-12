@@ -1,5 +1,4 @@
 const { insertEmptyIfMissing } = require('../utils/utils');
-// const seed = require('../seed.json');
 const { getStoresByUser } = require('../model/stores');
 const {
   getAuditResults,

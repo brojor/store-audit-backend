@@ -112,7 +112,7 @@ function generateDates(count) {
   const today = new Date();
   for (let index = 0; index < count; index++) {
     const year = today.getFullYear();
-    const month = today.getMonth();
+    const month = today.getMonth() - 1;
     const day = randomIntFromInterval(1, daysInMonth(month, year));
     const hour = randomIntFromInterval(8, 16);
     const minuts = randomIntFromInterval(0, 59);
