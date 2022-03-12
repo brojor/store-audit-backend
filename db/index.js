@@ -21,7 +21,7 @@ module.exports = {
     })
       .then((client) => {
         // console.log('Database was connected successfully');
-        _db = client.db('hannah');
+        _db = client.db('ABCompany');
         callback(null, _db);
       })
       .catch((err) => {
