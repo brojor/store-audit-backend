@@ -35,67 +35,82 @@ initDb(async (err) => {
 });
 
 async function seedUsers() {
-  console.log('Seeding users...');
-  return Promise.all(
-    roles
-      .map((role) =>
-        [...Array(role.count)].map(async () => {
-          const user = await createUser(role.name);
-          return getDb().collection('users').insertOne(user);
-        })
-      )
-      .flat()
-  );
+  const users = await getDb().collection('users').find({}).count();
+  if (!users) {
+    console.log('Seeding users...');
+    return Promise.all(
+      roles
+        .map((role) =>
+          [...Array(role.count)].map(async () => {
+            const user = await createUser(role.name);
+            return getDb().collection('users').insertOne(user);
+          })
+        )
+        .flat()
+    );
+  }
 }
 
 async function seedStores() {
-  console.log('Seeding stores...');
-  const storeManagers = await getStoreManagers();
-  return Promise.all(
-    storeManagers.map(async (storeManager) => {
-      const regionalManager = await getRandomRegionalManager();
-      const store = createStore(storeManager, regionalManager);
-      return getDb().collection('stores').insertOne(store);
-    })
-  );
+  const stores = await getDb().collection('stores').find({}).count();
+  if (!stores) {
+    console.log('Seeding stores...');
+    const storeManagers = await getStoreManagers();
+    return Promise.all(
+      storeManagers.map(async (storeManager) => {
+        const regionalManager = await getRandomRegionalManager();
+        const store = createStore(storeManager, regionalManager);
+        return getDb().collection('stores').insertOne(store);
+      })
+    );
+  }
 }
 
 async function seedCategories() {
-  console.log('Seeding categories...');
-  return getDb().collection('categories').insertMany(categories);
+  const categories = await getDb().collection('categories').find({}).count();
+  if (!categories) {
+    console.log('Seeding categories...');
+    return getDb().collection('categories').insertMany(categories);
+  }
 }
 
 async function seedCategoryPoints() {
-  console.log('Seeding category points...');
-  return getDb().collection('points').insertMany(points);
+  const points = await getDb().collection('points').find({}).count();
+  if (!points) {
+    console.log('Seeding category points...');
+    return getDb().collection('points').insertMany(points);
+  }
 }
 
 async function seedAudits(count, type = 'new') {
-  console.log('Seeding audits...');
-  if (type === 'new') {
-    const regionalManagers = await getListOfRegionalManagers();
-    const categoryPointsIds = await getListOfPointsIds();
-    const weights = await getWeights();
+  const audits = await getDb().collection('audits').find({}).count();
+  if (!audits) {
+    console.log('Seeding audits...');
+    if (type === 'new') {
+      const regionalManagers = await getListOfRegionalManagers();
+      const categoryPointsIds = await getListOfPointsIds();
+      const weights = await getWeights();
 
-    for (const regionalManager of regionalManagers) {
-      const stores = await getStoresBelongsManager(regionalManager);
-      for (const store of stores) {
-        const dates = generateDates(count);
-        for (const date of dates) {
-          const results = fakeResults(categoryPointsIds);
-          const audit = await createAudit({
-            weights,
-            storeId: store.storeId,
-            results,
-            auditor: regionalManager._id,
-            date,
-          });
-          await getDb().collection('audits').insertOne(audit);
+      for (const regionalManager of regionalManagers) {
+        const stores = await getStoresBelongsManager(regionalManager);
+        for (const store of stores) {
+          const dates = generateDates(count);
+          for (const date of dates) {
+            const results = fakeResults(categoryPointsIds);
+            const audit = await createAudit({
+              weights,
+              storeId: store.storeId,
+              results,
+              auditor: regionalManager._id,
+              date,
+            });
+            await getDb().collection('audits').insertOne(audit);
+          }
         }
       }
+    } else {
+      // mongorestore file
     }
-  } else {
-    // mongorestore file
   }
 }
 
